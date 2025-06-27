@@ -1,0 +1,303 @@
+Name\Birth\Death\Nationality\Rank\Year of the Best Rank
+Ivan Lendl\1960\-\United States\1\1985 (270)
+Andrés Gómez\1960\-\Ecuador\4\1990
+John Fitzgerald\1960\-\Australia\25\1988
+Ramesh Krishnan\1961\-\India\23\1985
+Anders Järryd\1961\-\Sweden\5\1985
+Rodney Harmon\1961\-\United States\-\-
+Brad Gilbert\1961\-\United States\4\1990
+Kelly Evernden\1961\-\New Zealand\-\-
+Ben Testerman\1962\-\United States\22\1984
+David Pate\1962\-\United States\18\1987
+Jan Gunnarsson\1962\-\Sweden\25\1985
+Scott Davis\1962\-\United States\11\1985
+Juan Aguilera\1962\-\Spain\7\1984
+Slobodan Živojinović\1963\-\Yugoslavia\19\1987
+Todd Witsken\1963\1998\United States\-\-
+Thierry Tulasne\1963\-\France\10\1986
+Milan Šrejber\1963\-\Czech Republic\23\1986
+Libor Pimek\1963\-\Czech Republic\21\1985
+Mikael Pernfors\1963\-\Sweden\10\1986
+Joakim Nyström\1963\-\Sweden\7\1986
+Wally Masur\1963\-\Australia\15\1993
+Henri Leconte\1963\-\France\5\1986
+Greg Holmes\1963\-\United States\22\1985
+Dan Goldie\1963\-\United States\-\-
+Sammy Giammalva Jr.\1963\-\United States\-\-
+Francesco Cancellotti\1963\-\Italy\21\1985
+Paul Annacone\1963\-\United States\12\1986
+Matt Anger\1963\-\United States\23\1986
+Mats Wilander\1964\-\Sweden\1\1988 (20)
+Henrik Sundström\1964\-\Sweden Sweden\6\1984
+Goran Prpić\1964\-\Croatia\16\1991
+Miloslav Mečíř\1964\-\Czech Republic\4\1988
+Martín Jaite\1964\-\Argentina\10\1990
+Jakob Hlasek\1964\-\Switzerland\22\1985
+Jordi Arrese\1964\-\Spain\23\1991
+Jimmy Arias\1964\-\United States\5\1984
+Ronald Agénor\1964\-\Haiti\22\1989
+Mark Woodforde\1965\-\Australia\19\1996
+Emilio Sánchez\1965\-\Spain\7\1990
+Derrick Rostagno\1965\-\United States\13\1991
+Richey Reneberg\1965\-\United States\20\1991
+Karel Nováček\1965\-\Czech Republic\-\-
+Amos Mansdorf\1965\-\Israel\18\1987
+Peter Lundgren\1965\-\Sweden\25\1987
+Eric Jelen\1965\-\Germany\23\1986
+Guy Forget\1965\-\France\4\1991
+Pat Cash\1965\-\Australia\4\1988
+Darren Cahill\1965\-\Australia\22\1989
+Jonas Svensson\1966\-\Sweden\10\1991
+Patrick McEnroe\1966\-\United States\-\-
+Patrik Kühnen\1966\-\Germany\-\-
+Paul Haarhuis\1966\-\Netherlands\18\1995
+Stefan Edberg\1966\-\Sweden\1\1990 (72)
+Andrei Chesnokov\1966\-\Russia\9\1991
+Thierry Champion\1966\-\France\-\-
+Jay Berger\1966\-\United States\7\1990
+Jaime Yzaga\1967\-\Peru\18\1989
+Alexander Volkov\1967\2019\Russia\14\1994
+Ulf Stenlund\1967\-\Sweden\23\1987
+Carl-Uwe Steeb\1967\-\Germany\14\1990
+Thomas Muster\1967\-\Austria\1\1995 (6)
+Shuzo Matsuoka\1967\-\Japan\-\-
+Aaron Krickstein\1967\-\United States\6\1990
+Magnus Gustafsson\1967\-\Sweden\10\1991
+Marcelo Filippini\1967\-\Uruguay\-\-
+Christian Bergström\1967\-\Sweden\-\-
+Boris Becker\1967\-\Germany\1\1991 (12)
+Michael Stich\1968\-\Germany\2\1993
+Horst Skoff\1968\2008\Austria\18\1990
+Javier Sánchez\1968\-\Spain\23\1994
+Petr Korda\1968\-\Czech Republic\2\1998
+Bernd Karbacher\1968\-\Germany\22\1995
+Henrik Holm\1968\-\Sweden\17\1993
+Carlos Costa\1968\-\Spain\10\1992
+Francisco Clavet\1968\-\Spain\18\1992
+Kent Carlsson\1968\-\Sweden\6\1988
+Omar Camporese\1968\-\Italy\18\1992
+David Wheaton\1969\-\United States\12\1992
+MaliVai Washington\1969\-\United States\11\1992
+Brett Steven\1969\-\New Zealand\-\-
+Cédric Pioline\1969\-\France\-\-
+Guillermo Pérez Roldán\1969\-\Argentina\13\1988
+Alberto Mancini\1969\-\Argentina\8\1989
+Arnaud Boetsch\1969\-\ France\12\1996
+Byron Black\1969\-\Zimbabwe\22\1996
+Jason Stoltenberg\1970\-\Australia\19\1994
+Jan Siemerink\1970\-\Netherlands\14\1998
+Marc Rosset\1970\-\Switzerland\9\1995
+Todd Martin\1970\-\United States\4\1999
+Magnus Larsson\1970\-\Sweden\10\1995
+Renzo Furlan\1970\-\Italy\19\1996
+Richard Fromberg\1970\-\Australia\24\1990
+Jacco Eltingh\1970\-\Netherlands\19\1995
+Sláva Doseděl\1970\-\Czech Republic\-\-
+Franco Davín\1970\-\Argentina\-\-
+Jim Courier\1970\-\United States\1\1992 (58)
+Andrei Cherkasov\1970\-\Russia\13\1991
+Cristiano Caratti\1970\-\Italy\-\-
+Andre Agassi\1970\-\United States\1\1999 (101)
+Todd Woodbridge\1971\-\Australia\19\1997
+Pete Sampras\1971\-\United States\1\1993 (286)
+Fernando Meligeni\1971\-\Brazil\25\1999
+Nicklas Kulti\1971\-\Sweden\-\-
+Richard Krajicek\1971\-\Netherlands\4\1999
+Goran Ivanišević\1971\-\Croatia\2\1994
+Wayne Ferreira\1971\-\South Africa\6\1995
+Younes El Aynaoui\1971\-\Morocco\14\2003
+Sergi Bruguera\1971\-\Spain\3\1994
+Mikael Tillström\1972\-\Sweden\-\-
+Fabrice Santoro\1972\-\France\17\2001
+Patrick Rafter\1972\-\Australia\1\2001 (1)
+Filip Dewulf\1972\-\Belgium\-\-
+Michael Chang\1972\-\United States\2\1996
+Jonas Björkman\1972\-\Sweden\4\1997
+Chris Woodruff\1973\-\United States\-\-
+Greg Rusedski\1973\-\Great Britain\4\1997
+Leander Paes\1973\-\India\-\-
+Jérôme Golmard\1973\2017\France\22\1999
+Andrea Gaudenzi\1973\-\Italy\18\1995
+Alberto Berasategui\1973\-\Spain\7\1994
+Hicham Arazi\1973\-\Morocco\22\2001
+Karim Alami\1973\-\Morocco\25\2000
+Adrian Voinea\1974\-\Romania\-\-
+Vince Spadea\1974\-\United States\18\2005
+Andrei Pavel\1974\-\Romania\13\2004
+Andrei Medvedev\1974\-\Ukraine\4\1994
+Félix Mantilla\1974\-\Spain\10\1998
+Karol Kučera\1974\-\Slovakia\6\1998
+Yevgeny Kafelnikov\1974\-\Russia\1\1999 (6)
+Tim Henman\1974\-\Great Britain\4\2002
+Thomas Enqvist\1974\-\Sweden\4\1999
+Àlex Corretja\1974\-\Spain\2\1999
+Franco Squillari\1975\-\Argentina\11\2000
+Marcelo Ríos\1975\-\Chile\1\1998 (6)
+Jiří Novák\1975\-\Czech Republic\5\2002
+Thomas Johansson\1975\-\Sweden\7\2002
+Hendrik Dreekmann\1975\-\Germany\-\-
+Albert Costa\1975\-\Spain\6\2002
+Rainer Schüttler\1976\-\Germany\5\2003
+Sjeng Schalken\1976\-\Netherlands\11\2003
+Alexander Popp\1976\-\Germany\-\-
+Mark Philippoussis\1976\-\Australia\8\1999
+Magnus Norman\1976\-\Sweden\2\2000
+Carlos Moyá\1976\-\Spain\1\1999 (2)
+Nicolás Lapentti\1976\-\Ecuador\6\1999
+Gustavo Kuerten\1976\-\Brazil\1\2000 (43)
+Nicolas Escudé\1976\-\France\17\2000
+Agustín Calleri\1976\-\ Argentina\16\2003
+Galo Blanco\1976\-\Spain\-\-
+Max Mirnyi\1977\-\Belarus\18\2003
+Stefan Koubek\1977\-\Austria\20\2000
+Nicolas Kiefer\1977\-\Germany\4\2000
+Jan-Michael Gambill\1977\-\United States\14\2001
+Arnaud Clément\1977\-\France\10\2001
+Guillermo Cañas\1977\-\Argentina\8\2005
+Mariano Zabaleta\1978\-\Argentina\20\2000
+Martin Verkerk\1978\-\Netherlands\14\2003
+Radek Štěpánek\1978\-\Czech Republic\8\2006
+André Sá\1978\-\Brazil\-\-
+Mariano Puerta\1978\-\Argentina\9\2005
+Dominik Hrbatý\1978\-\Slovakia\12\2004
+Tommy Haas\1978\-\Germany\2\2002
+Gastón Gaudio\1978\-\Argentina\5\2005
+Paradorn Srichaphan\1979\-\Thailand\9\2003
+Nicolás Massú\1979\-\Chile\9\2004
+Ivan Ljubičić\1979\-\Croatia\3\2006
+Ivo Karlović\1979\-\Croatia\14\2008
+Arnaud Di Pasquale\1979\-\France\-\-
+Juan Ignacio Chela\1979\-\Argentina\15\2004
+James Blake\1979\-\United States\4\2006
+Marat Safin\1980\-\Russia\1\2005 (9)
+Albert Montañés\1980\-\Spain\22\2010
+Xavier Malisse\1980\-\Belgium\19\2002
+Michaël Llodra\1980\-\France\21\2011
+Fernando González\1980\-\Chile\5\2007
+Juan Carlos Ferrero\1980\-\Spain\1\2003 (8)
+Filippo Volandri\1981\-\Italy\25\2007
+Olivier Rochus\1981\-\Belgium\24\2005
+Jarkko Nieminen\1981\-\Finland\13\2006
+Jürgen Melzer\1981\-\Austria\8\2011
+Feliciano López\1981\-\Spain\12\2015
+Lleyton Hewitt\1981\-\Australia\1\2001 (80)
+Victor Hănescu\1981\-\Romania\-\-
+Mardy Fish\1981\-\United States\7\2011
+Roger Federer\1981\-\Switzerland\1\2004 (310)
+Taylor Dent\1981\-\United States\21\2005
+Nikolay Davydenko\1981\-\Russia\3\2006
+Julien Benneteau\1981\-\France\25\2014
+Mikhail Youzhny\1982\-\Russia\8\2008
+Dmitry Tursunov\1982\-\Russia\20\2006
+Andy Roddick\1982\-\United States\1\2003 (13)
+Tommy Robredo\1982\-\Spain\5\2006
+David Nalbandian\1982\-\Argentina\3\2006
+Paul-Henri Mathieu\1982\-\France\12\2008
+Łukasz Kubot\1982\-\Poland\-\-
+Joachim Johansson\1982\-\Sweden\9\2005
+Robby Ginepri\1982\-\United States\15\2005
+David Ferrer\1982\-\Spain\3\2013
+Guillermo Coria\1982\-\Argentina\3\2004
+José Acasuso\1982\-\Argentina\20\2006
+Fernando Verdasco\1983\-\Spain\7\2009
+Gilles Müller\1983\-\Luxembourg\-\-
+Florian Mayer\1983\-\Germany\18\2011
+Yen-hsun Lu\1983\-\Taipei\-\-
+Philipp Kohlschreiber\1983\-\Germany\16\2012
+Guillermo García López\1983\-\Spain\23\2011
+Igor Andreev\1983\-\Russia\18\2008
+Janko Tipsarević\1984\-\Serbia\8\2012
+Robin Söderling\1984\-\Sweden\4\2010
+Gilles Simon\1984\-\France\6\2013
+Juan Mónaco\1984\-\Argentina\10\2012
+Mario Ančić\1984\-\Croatia\7\2014
+Jo-Wilfried Tsonga\1985\-\France\5\2012
+John Isner\1985\-\United States\8\2018
+Tomáš Berdych\1985\-\Czech Republic\4\2015
+Marcos Baghdatis\1985\-\Cyprus\8\2006
+Nicolás Almagro\1985\-\Spain\9\2011
+Viktor Troicki\1986\-\Serbia\12\2011
+Rafael Nadal\1986\-\Spain\1\2008 (209)
+Gaël Monfils\1986\-\France\6\2016
+Richard Gasquet\1986\-\France\7\2007
+Pablo Cuevas\1986\-\Uruguay\19\2016
+Kevin Anderson\1986\-\South Africa\5\2018
+Mischa Zverev\1987\-\Germany\25\2017
+Sam Querrey\1987\-\United States\11\2018
+Andy Murray\1987\-\Great Britain\1\2016 (41)
+Leonardo Mayer\1987\-\Argentina\21\2015
+Fabio Fognini\1987\-\Italy\9\2019
+Novak Djokovic\1987\-\Serbia\1\2011 (428)
+Jérémy Chardy\1987\-\France\25\2013
+Thomaz Bellucci\1987\-\Brazil\21\2010
+Albert Ramos Viñolas\1988\-\Spain\17\2016
+Juan Martín del Potro\1988\-\Argentina\3\2018
+Adrian Mannarino\1988\-\France\17\2024
+Ernests Gulbis\1988\-\Latvia\10\2014
+Alexandr Dolgopolov\1988\-\Ukraine\13\2012
+Marin Čilić\1988\-\Croatia\3\2018
+Roberto Bautista Agut\1988\-\Spain\9\2020
+Benoît Paire\1989\-\France\18\2016
+Kei Nishikori\1989\-\Japan\4\2015
+Martin Kližan\1989\-\Slovakia\24\2015
+Steve Johnson\1989\-\United States\21\2016
+Jan-Lennard Struff\1990\-\Germany\21\2023
+Milos Raonic\1990\-\Canada\3\2016
+Vasek Pospisil\1990\-\Canada\25\2014
+Guido Pella\1990\-\Argentina\20\2019
+Dušan Lajović\1990\-\Serbia\23\2019
+Jerzy Janowicz\1990\-\Poland\14\2017
+Dan Evans\1990\-\Great Britain\21\2021
+Grigor Dimitrov\1991\-\Bulgaria\3\2017
+Pablo Carreño Busta\1991\-\Spain\10\2017
+Bernard Tomic\1992\-\Australia\17\2016
+Jack Sock\1992\-\United States\8\2017
+Diego Schwartzman\1992\-\Argentina\8\2020
+Márton Fucsovics\1992\-\Hungary\-\-
+Marco Cecchinato\1992\-\Italy\16\2019
+Nikoloz Basilashvili\1992\-\Georgia\16\2019
+Dominic Thiem\1993\-\Austria\3\2020
+Aslan Karatsev\1993\-\Russia\14\2021
+Lucas Pouille\1994\-\France\10\2018
+Botic van de Zandschulp\1995\-\Netherlands\22\2022
+Lorenzo Sonego\1995\-\Italy\21\2021
+Cameron Norrie\1995\-\Great Britain\8\2022
+Yoshihito Nishioka\1995\-\Japan\24\2023
+Nick Kyrgios\1995\-\Australia\13\2016
+Nicolás Jarry\1995\-\Chile\16\2024
+Kyle Edmund\1995\-\Great Britain\14\2018
+Tallon Griekspoor\1996\-\Netherlands\21\2023
+Daniil Medvedev\1996\-\Russia\1\2022 (16)
+Cristian Garín\1996\-\Chile\17\2021
+Christopher Eubanks\1996\-\United States\-\-
+Borna Ćorić\1996\-\Croatia\12\2018
+Matteo Berrettini\1996\-\Italy\6\2022
+Alexander Zverev\1997\-\Germany\2\2022
+Alejandro Tabilo\1997\-\Chile Chile\19\Ranking in 2024
+Andrey Rublev\1997\-\Russia\5\2021
+Tommy Paul\1997\-\United States\9\2025
+Reilly Opelka\1997\-\United States\17\2022
+Hubert Hurkacz\1997\-\Poland\8\2024
+Lloyd Harris\1997\-\South Africa\-\-
+Taylor Fritz\1997\-\United States\4\2024
+Alexander Bublik\1997\-\Kazakhstan\17\2024
+Stefanos Tsitsipas\1998\-\Greece\3\2021
+Frances Tiafoe\1998\-\United States\10\2023
+Casper Ruud\1998\-\Norway\2\2022
+Ugo Humbert\1998\-\France\13\2024
+Francisco Cerundolo\1998\-\Argentina\19\2023
+Denis Shapovalov\1999\-\Canada\10\2020
+Alex de Minaur\1999\-\Australia\9\2024
+Alejandro Davidovich Fokina\1999\-\Spain\21\2023
+Tomáš Macháč\2000\Czech Republic\25\2024
+Sebastian Korda\2000\-\United States\23\2023
+Sebastián Báez\2000\-\Argentina\18\2024
+Félix Auger-Aliassime\2000\-\Canada\6\2022
+Jannik Sinner\2001\-\Italy\1\2024 (46)
+Jiří Lehečka\2001\-\Czech Republic\23\2024
+Jack Draper\2001\Great Britain\15\2024
+Ben Shelton\2002\-\United States\13\2024
+Lorenzo Musetti\2002\-\Italy\15\2022
+Holger Rune\2003\-\Denmark\4\2023
+Carlos Alcaraz\2003\-\Spain\1\2022 (36)
+Arthur Fils\2004\-\France\19\2024 
