@@ -10,11 +10,6 @@ void read_header(FILE *index_file, BPTHeader *header) {
     fread(header, sizeof(BPTHeader), 1, index_file);
 }
 
-void init_header(FILE *index_file) {
-    BPTHeader new_header = {BTREE_ORDER, sizeof(BPTHeader), 0, 0, sizeof(BPTHeader), 0};
-    write_header(index_file, &new_header);
-}
-
 void print_header(BPTHeader *header) {
 
     printf("<Header>\n");
@@ -52,7 +47,6 @@ void add_internal_node(FILE *index_file, InternalNode *node) {
 
 void print_node_aux(InternalNode *node) {
     printf("<Node>\n");
-    printf("Is leaf: %d\n", node->is_leaf);
     printf("Num keys: %d\n", node->num_keys);
     printf("Keys: ");
     int i;
@@ -73,6 +67,10 @@ void print_internal_nodes(FILE *index_file) {
     BPTHeader header;
     InternalNode temp_node;
     read_header(index_file, &header);
+    if (header.internal_node_count == 0) {
+        printf("Arquivo de indices vazio\n");
+        return;
+    }
 
     fseek(index_file, header.root_node_offset, SEEK_SET);
     int start = ftell(index_file);
@@ -82,31 +80,59 @@ void print_internal_nodes(FILE *index_file) {
     }
 }
 
-// int main()
-// {
-//     FILE *fp = fopen("indices.bin", "rb+");
-//     init_header(fp);
+void write_leaf_node(int leaf_id, LeafNode *node) {
+    char filename[FILENAME_SIZE];
+    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    FILE *leaf_file = fopen(filename, "wb");
+    if (leaf_file == NULL) {
+        perror("Falha ao abrir arquivo folha");
+        return;
+    }
+    fwrite(node, sizeof(LeafNode), 1, leaf_file);
+    fclose(leaf_file);
+}
 
-//     InternalNode node1 = {0, 5, {"Zarias Keith", "John Arias", "Beckman B.", "Roger Federer", "Carlos Alcaraz"}, {4, 5, 6, 12, 3, 10}, 0};
-//     InternalNode node2 = {0, 4, {"David Pate", "Scott Davis", "Henri Leconte"}, {0, 1, 5, 7}, 0};
-//     InternalNode node3 = {1, 2, {"Gabriel Monteiro", "Bitelo Raquete"}, {2, 8, 9}, 0};
+void read_leaf_node(int leaf_id, LeafNode *node) {
+    char filename[FILENAME_SIZE];
+    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    printf("filename: %s\n", filename);
+    FILE *leaf_file = fopen(filename, "rb");
+    if (leaf_file == NULL) {
+        perror("Falha ao abrir arquivo folha");
+        return;
+    }
+    fread(node, sizeof(LeafNode), 1, leaf_file);
+    fclose(leaf_file);
+}
 
-//     add_internal_node(fp, &node1);
-//     add_internal_node(fp, &node2);
-//     add_internal_node(fp, &node3);
+void print_leaf_aux(LeafNode *node) {
 
+    // --- Impressão Formatada ---
+    printf("------------------------------------------\n");
+    printf("Numero de Registros: %d\n", node->num_records);
+    printf("ID da Proxima Folha: %d\n", node->next_leaf_id);
+    printf("\nRegistros:\n");
 
-//     fclose(fp);
+    if (node->num_records == 0) {
+        printf("  (Folha vazia)\n");
+    } 
+    else {
+        for (int i = 0; i < node->num_records; i++) {
+            printf("  [%d] -> Nome: %s %s, Ano Nasc: %d, Rank: %d\n", 
+                   i, 
+                   node->records[i].name, 
+                   node->records[i].lastname,
+                   node->records[i].birth_year, 
+                   node->records[i].best_rank);
+        }
+    }
+    printf("------------------------------------------\n\n");
+}
 
-
-//     BPTHeader *file_header = (BPTHeader *)malloc(sizeof(BPTHeader));
-//     InternalNode *file_node = (InternalNode *)malloc(sizeof(InternalNode));
-
-//     fp = fopen("indices.bin", "rb");
-
-//     read_header(fp, file_header);
-//     print_header(file_header);
-
-//     printf("\n");
-//     print_internal_nodes(fp);
-// }
+int init_BPT(FILE *index_file) {
+    BPTHeader init_header = {BTREE_ORDER, -1, 0, 1, sizeof(BPTHeader), -2};
+    write_header(index_file, &init_header);
+    LeafNode first_leaf = {0};
+    first_leaf.next_leaf_id = -2;
+    write_leaf_node(init_header.root_node_offset, &first_leaf);
+}
