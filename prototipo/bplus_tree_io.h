@@ -42,7 +42,19 @@ typedef struct BPTHeader {
     int root_node_offset;
     int internal_node_count;
     int leaf_file_count;
-    int next_internal_node_id;
+    int next_free_offset;
     int next_leaf_id;
 } BPTHeader;
 // BPTHeader size = 24 bytes
+
+// FUNÇÕES ESCRITA/LEITURA
+
+void write_header(FILE *index_file, BPTHeader *header);
+void read_header(FILE *index_file, BPTHeader *header);
+void init_header(FILE *index_file);
+void print_header(BPTHeader *header);
+void write_internal_node(FILE *index_file, int offset, InternalNode *node);
+void read_internal_node(FILE *index_file, int offset, InternalNode *node);
+void print_node_aux(InternalNode *node);
+void print_internal_nodes(FILE *index_file);
+void add_internal_node(FILE *index_file, InternalNode *node);
