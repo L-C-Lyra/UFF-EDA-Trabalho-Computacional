@@ -10,18 +10,6 @@ void read_header(FILE *index_file, BPTHeader *header) {
     fread(header, sizeof(BPTHeader), 1, index_file);
 }
 
-void print_header(BPTHeader *header) {
-
-    printf("<Header>\n");
-    printf("Order: %d\n", header->order);
-    printf("Root node offset: %d\n", header->root_node_offset);
-    printf("Internal node count %d\n", header->internal_node_count);
-    printf("Leaf file count: %d\n", header->leaf_file_count);
-    printf("Next free offset: %d\n", header->next_free_offset);
-    printf("Next leaf id: %d\n", header->next_leaf_id);
-    printf("\n");
-}
-
 void write_internal_node(FILE *index_file, int offset, InternalNode *node) {
     fseek(index_file, offset, SEEK_SET);
     fwrite(node, sizeof(InternalNode), 1, index_file);
@@ -30,6 +18,75 @@ void write_internal_node(FILE *index_file, int offset, InternalNode *node) {
 void read_internal_node(FILE *index_file, int offset, InternalNode *node) {
     fseek(index_file, offset, SEEK_SET);
     fread(node, sizeof(InternalNode), 1, index_file);
+}
+
+void write_leaf_node(int leaf_id, LeafNode *node) {
+    char filename[FILENAME_SIZE];
+    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    FILE *leaf_file = fopen(filename, "wb");
+    if (leaf_file == NULL) {
+        perror("Falha ao abrir arquivo folha");
+        return;
+    }
+    fwrite(node, sizeof(LeafNode), 1, leaf_file);
+    fclose(leaf_file);
+}
+
+void read_leaf_node(int leaf_id, LeafNode *node) {
+    char filename[FILENAME_SIZE];
+    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    FILE *leaf_file = fopen(filename, "rb");
+    if (leaf_file == NULL) {
+        perror("Falha ao abrir arquivo folha");
+        return;
+    }
+    fread(node, sizeof(LeafNode), 1, leaf_file);
+    fclose(leaf_file);
+}
+
+int init_BPT(FILE *index_file) {
+    BPTHeader init_header = {BTREE_ORDER, -1, 0, 0, sizeof(BPTHeader), -1};
+    write_header(index_file, &init_header);
+}
+
+
+/*
+-----------------------------------------------------
+        FUNÇÕES QUE NÃO FARÃO PARTE DA API
+-----------------------------------------------------
+*/
+
+
+void print_header(BPTHeader *header) {
+
+    printf("<Header>\n");
+    printf("Order: %d\n", header->order);
+    printf("Root node offset: %d\n", header->root_offset);
+    printf("Internal node count %d\n", header->internal_node_count);
+    printf("Leaf file count: %d\n", header->leaf_count);
+    printf("Next free offset: %d\n", header->next_free_offset);
+    printf("Next leaf id: %d\n", header->next_leaf_id);
+    printf("\n");
+}
+
+void add_leaf_node(FILE *index_file, LeafNode *leafnode) {
+    BPTHeader header;
+    read_header(index_file, &header);
+
+    char filename[FILENAME_SIZE];
+    sprintf(filename, "folha_%03d.bin", header.next_leaf_id);
+    FILE *leaf_file = fopen(filename, "wb");
+    if (!leaf_file) {
+        printf("Erro ao abrir arquivo folha\n");
+    }
+
+    leafnode->next_leaf_id = header.next_leaf_id + 1;
+    fwrite(leafnode, sizeof(LeafNode), 1, leaf_file);
+    fclose(leaf_file);
+
+    header.leaf_count++;
+    header.next_leaf_id++;
+    write_header(index_file, &header);
 }
 
 void add_internal_node(FILE *index_file, InternalNode *node) {
@@ -72,7 +129,7 @@ void print_internal_nodes(FILE *index_file) {
         return;
     }
 
-    fseek(index_file, header.root_node_offset, SEEK_SET);
+    fseek(index_file, header.root_offset, SEEK_SET);
     int start = ftell(index_file);
     for (int j = 0; j < header.internal_node_count; j++) {
         read_internal_node(index_file, (start + j * sizeof(InternalNode)), &temp_node);
@@ -80,30 +137,6 @@ void print_internal_nodes(FILE *index_file) {
     }
 }
 
-void write_leaf_node(int leaf_id, LeafNode *node) {
-    char filename[FILENAME_SIZE];
-    sprintf(filename, "folha_%03d.bin", (-leaf_id));
-    FILE *leaf_file = fopen(filename, "wb");
-    if (leaf_file == NULL) {
-        perror("Falha ao abrir arquivo folha");
-        return;
-    }
-    fwrite(node, sizeof(LeafNode), 1, leaf_file);
-    fclose(leaf_file);
-}
-
-void read_leaf_node(int leaf_id, LeafNode *node) {
-    char filename[FILENAME_SIZE];
-    sprintf(filename, "folha_%03d.bin", (-leaf_id));
-    printf("filename: %s\n", filename);
-    FILE *leaf_file = fopen(filename, "rb");
-    if (leaf_file == NULL) {
-        perror("Falha ao abrir arquivo folha");
-        return;
-    }
-    fread(node, sizeof(LeafNode), 1, leaf_file);
-    fclose(leaf_file);
-}
 
 void print_leaf_aux(LeafNode *node) {
 
@@ -129,10 +162,15 @@ void print_leaf_aux(LeafNode *node) {
     printf("------------------------------------------\n\n");
 }
 
-int init_BPT(FILE *index_file) {
-    BPTHeader init_header = {BTREE_ORDER, -1, 0, 1, sizeof(BPTHeader), -2};
-    write_header(index_file, &init_header);
-    LeafNode first_leaf = {0};
-    first_leaf.next_leaf_id = -2;
-    write_leaf_node(init_header.root_node_offset, &first_leaf);
+void print_leafs(BPTHeader *header) {
+    if (header && header->leaf_count == 0) {
+        printf("Arvore vazia.\n");
+        return;
+    }
+
+    LeafNode node;
+    for (int i = 1; i <= header->leaf_count; i++) {
+        read_leaf_node(i, &node);        
+        print_leaf_aux(&node);
+    }
 }
