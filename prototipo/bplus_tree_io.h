@@ -1,3 +1,6 @@
+#ifndef BPLUS_TREE_IO
+#define BPLUS_TREE_IO
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -60,19 +63,21 @@ typedef struct BPTHeader {
 
 int init_BPT(FILE *index_file);
 void write_header(FILE *index_file, BPTHeader *header);
-void read_header(FILE *index_file, BPTHeader *header);
+BPTHeader *read_header(FILE *index_file);
 void write_internal_node(FILE *index_file, int offset, InternalNode *node);
-void read_internal_node(FILE *index_file, int offset, InternalNode *node);
+InternalNode *read_internal_node(FILE *index_file, int offset);
 void write_leaf_node(int leaf_id, LeafNode *node);
-void read_leaf_node(int leaf_id, LeafNode *node);
+LeafNode *read_leaf_node(int leaf_id);
 
 /*
 -----------------------------------------------------
         FUNÇÕES QUE NÃO FARÃO PARTE DA API
 -----------------------------------------------------
 */
-// void add_internal_node(FILE *index_file, InternalNode *node);
-// void add_leaf_node(FILE *index_file, LeafNode *leafnode);
-// void print_header(BPTHeader *header);
-// void print_internal_nodes(FILE *index_file);
-// void print_leafs(BPTHeader *header);
+void add_internal_node(FILE *index_file, InternalNode *node);
+void add_leaf_node(FILE *index_file, LeafNode *leafnode);
+void print_header(BPTHeader *header);
+void print_internal_nodes(FILE *index_file);
+void print_leafs(BPTHeader *header);
+void print_leaf_aux(LeafNode *node);
+#endif

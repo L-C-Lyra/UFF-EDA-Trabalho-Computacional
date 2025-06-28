@@ -14,29 +14,14 @@ int main() {
     init_BPT(fp_index);
     fclose(fp_index); 
 
-   
-    BPTHeader *file_header = (BPTHeader *)malloc(sizeof(BPTHeader));
-    if (file_header == NULL) {
-        perror("Erro ao alocar file_header");
-        return 1;
-    }
-    LeafNode *leaf_node = (LeafNode *)malloc(sizeof(LeafNode));
-    if (leaf_node == NULL) {
-        perror("Erro ao alocar leaf_node");
-        free(file_header);
-        return 1;
-    }
-
     fp_index = fopen("indices_t.bin", "rb");
     if (fp_index == NULL) {
         perror("Erro ao reabrir indices_t.bin para leitura");
-        free(file_header);
-        free(leaf_node);
         return 1;
     }
 
  
-    read_header(fp_index, file_header);
+    BPTHeader *file_header = read_header(fp_index);
     print_header(file_header);
 
     printf("\n");
@@ -44,11 +29,10 @@ int main() {
     print_internal_nodes(fp_index);
 
 
-    read_leaf_node(-1, leaf_node);
+    LeafNode *leaf_node = read_leaf_node(-1);
     print_leaf_aux(leaf_node);
 
     fclose(fp_index); 
-
     free(file_header);
     free(leaf_node);
 
