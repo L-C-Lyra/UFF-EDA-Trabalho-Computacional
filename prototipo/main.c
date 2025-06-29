@@ -1,4 +1,4 @@
-#include "bplus_tree_io.h" 
+#include "bplus_tree.h" 
 #include "data_parser.h"   
 #include <stdio.h>         
 #include <stdlib.h>        
@@ -11,7 +11,7 @@ int main() {
         return 1;
     }
 
-    init_BPT(fp_index);
+    init_BPT(fp_index, BTREE_ORDER);
     fclose(fp_index); 
 
     fp_index = fopen("indices_t.bin", "rb");
@@ -46,7 +46,8 @@ int main() {
         return 1;
     }
 
-    char line[512]; 
+    PlayerData players[310];
+    char line[512];
     int line_count = 0;
 
 
@@ -68,15 +69,15 @@ int main() {
         }
 
         PlayerData p = parse_player_data(line);
-
+        memcpy(&players[line_count-1], &p, sizeof(PlayerData));
 
         printf("  Linha %d - Nome: %s %s, Nasc: %d, Rank: %d\n",
                line_count, p.name, p.lastname, p.birth_year, p.best_rank);
-
-
     }
 
     fclose(fp_players); 
+
+
 
     printf("\n--- Carregamento e Parsing Concluídos. Próximo passo: Implementar a Inserção na B+ Tree ---\n");
 

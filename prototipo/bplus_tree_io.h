@@ -30,7 +30,6 @@ typedef struct PlayerData {
 // PlayerData size = 116 bytes
 
 typedef struct InternalNode {
-    char is_pointer_to_leaf;
     int num_keys;
     char keys[KEY_SIZE][NAME_SIZE];
     int children_pointers[KEY_SIZE+1];
@@ -61,11 +60,11 @@ typedef struct BPTHeader {
 -----------------------------------------------------
 */
 
-int init_BPT(FILE *index_file);
+int init_BPT(FILE *index_file, int order);
 void write_header(FILE *index_file, BPTHeader *header);
 BPTHeader *read_header(FILE *index_file);
-void write_internal_node(FILE *index_file, int offset, InternalNode *node);
-InternalNode *read_internal_node(FILE *index_file, int offset);
+void write_internal_node(FILE *index_file, int node_offset, InternalNode *node);
+InternalNode *read_internal_node(FILE *index_file, int node_offset);
 void write_leaf_node(int leaf_id, LeafNode *node);
 LeafNode *read_leaf_node(int leaf_id);
 
@@ -74,10 +73,13 @@ LeafNode *read_leaf_node(int leaf_id);
         FUNÇÕES QUE NÃO FARÃO PARTE DA API
 -----------------------------------------------------
 */
+void write_internal_node_from_id(FILE *index_file, int node_id, InternalNode *node);
+InternalNode *read_internal_node_from_id(FILE *index_file, int node_id);
 void add_internal_node(FILE *index_file, InternalNode *node);
 void add_leaf_node(FILE *index_file, LeafNode *leafnode);
 void print_header(BPTHeader *header);
 void print_internal_nodes(FILE *index_file);
 void print_leafs(BPTHeader *header);
 void print_leaf_aux(LeafNode *node);
+void print_player(PlayerData *record);
 #endif

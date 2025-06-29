@@ -14,14 +14,14 @@ BPTHeader *read_header(FILE *index_file) {
     return NULL;
 }
 
-void write_internal_node(FILE *index_file, int offset, InternalNode *node) {
-    fseek(index_file, offset, SEEK_SET);
+void write_internal_node(FILE *index_file, int node_offset, InternalNode *node) {
+    fseek(index_file, node_offset, SEEK_SET);
     fwrite(node, sizeof(InternalNode), 1, index_file);
 }
 
-InternalNode *read_internal_node(FILE *index_file, int offset) {
+InternalNode *read_internal_node(FILE *index_file, int node_offset) {
     InternalNode *node = (InternalNode *)malloc(sizeof(InternalNode));
-    fseek(index_file, offset, SEEK_SET);
+    fseek(index_file, node_offset, SEEK_SET);
     if(fread(node, sizeof(InternalNode), 1, index_file)) {
         return node;
     }
@@ -54,8 +54,8 @@ LeafNode *read_leaf_node(int leaf_id) {
     return node;
 }
 
-int init_BPT(FILE *index_file) {
-    BPTHeader init_header = {BTREE_ORDER, -1, 0, 0, sizeof(BPTHeader), -1};
+int init_BPT(FILE *index_file, const int order) {
+    BPTHeader init_header = {order, -1, 0, 0, sizeof(BPTHeader), -1};
     write_header(index_file, &init_header);
 }
 
@@ -66,17 +66,21 @@ int init_BPT(FILE *index_file) {
 -----------------------------------------------------
 */
 
+void write_internal_node_from_id(FILE *index_file, int node_id, InternalNode *node) {
+    int offset = sizeof(BPTHeader) + (node_id * sizeof(InternalNode));
+    fseek(index_file, offset, SEEK_SET);
+    fwrite(node, sizeof(InternalNode), 1, index_file);
+}
 
-void print_header(BPTHeader *header) {
+InternalNode *read_internal_node_from_id(FILE *index_file, int node_id) {
+    int offset = sizeof(BPTHeader) + (node_id * sizeof(InternalNode));
 
-    printf("<Header>\n");
-    printf("Order: %d\n", header->order);
-    printf("Root node offset: %d\n", header->root_offset);
-    printf("Internal node count %d\n", header->internal_node_count);
-    printf("Leaf file count: %d\n", header->leaf_count);
-    printf("Next free offset: %d\n", header->next_free_offset);
-    printf("Next leaf id: %d\n", header->next_leaf_id);
-    printf("\n");
+    InternalNode *node = (InternalNode *)malloc(sizeof(InternalNode));
+    fseek(index_file, offset, SEEK_SET);
+    if(fread(node, sizeof(InternalNode), 1, index_file)) {
+        return node;
+    }
+    return NULL;
 }
 
 void add_leaf_node(FILE *index_file, LeafNode *leafnode) {
@@ -95,7 +99,7 @@ void add_leaf_node(FILE *index_file, LeafNode *leafnode) {
 
     header->leaf_count++;
     header->next_leaf_id++;
-    write_header(index_file, &header);
+    write_header(index_file, header);
 }
 
 void add_internal_node(FILE *index_file, InternalNode *node) {
@@ -109,6 +113,19 @@ void add_internal_node(FILE *index_file, InternalNode *node) {
     t_header->internal_node_count++;
     t_header->next_free_offset += sizeof(InternalNode);
     write_header(index_file, t_header);
+}
+
+
+void print_header(BPTHeader *header) {
+
+    printf("<Header>\n");
+    printf("Order: %d\n", header->order);
+    printf("Root node offset: %d\n", header->root_offset);
+    printf("Internal node count %d\n", header->internal_node_count);
+    printf("Leaf file count: %d\n", header->leaf_count);
+    printf("Next free offset: %d\n", header->next_free_offset);
+    printf("Next leaf id: %d\n", header->next_leaf_id);
+    printf("\n");
 }
 
 void print_node_aux(InternalNode *node) {
@@ -125,8 +142,6 @@ void print_node_aux(InternalNode *node) {
     for (i = 0; i <= node->num_keys; i++) {
         printf("%d ", node->children_pointers[i]);
     }
-    printf("\n");
-    printf("Is pointer to leaf: %d\n", node->is_pointer_to_leaf);
     printf("\n");
 }
 
@@ -147,6 +162,13 @@ void print_internal_nodes(FILE *index_file) {
     }
 }
 
+void print_player(PlayerData *record) {
+    printf("Player -> Nome: %s %s, Ano Nasc: %d, Rank: %d\n",
+        record->name, 
+        record->lastname,
+        record->birth_year, 
+        record->best_rank);
+}
 
 void print_leaf_aux(LeafNode *node) {
 
@@ -181,7 +203,8 @@ void print_leafs(BPTHeader *header) {
 
     LeafNode *node = NULL;
     for (int i = 1; i <= header->leaf_count; i++) {
-        node = read_leaf_node(i);        
+        node = read_leaf_node(-i);        
         print_leaf_aux(node);
     }
 }
+
