@@ -5,30 +5,27 @@
 #include <stdlib.h> 
 #include <string.h> 
 #include "bplus_tree_io.h" 
-#define HASH_TABLE_SIZE 1009 
 
 
-// cada nó tem a chave (player full name) e o "valor" (localização na B+ Tree)
+#define HASH_TABLE_SIZE 1009 // um número primo 
+
+// struct para um nó da lista encadeada (para tratamento de colisões)
 typedef struct HashEntry {
     char full_name[NAME_SIZE * 2]; 
-    int leaf_id;                  // corresponde a um arqv binario distinto
-    int record_index_in_leaf;      // indice do registro dentro da folha pra achar o jogador especifico
-    struct HashEntry *next;        // ponteiro para o próximo nó na lde
+    int leaf_id;                   // id da folha na B+ 
+    int record_index_in_leaf;      // indice do registro dentro da folha
+    struct HashEntry *next;        // ponteiro para o próximo nó na lista encadeada
 } HashEntry;
 
 
 typedef struct HashTable {
-
-    HashEntry *buckets[HASH_TABLE_SIZE]; // array de ponteiros (lde)
-
+    HashEntry *list_heads[HASH_TABLE_SIZE]; // array de ponteiros para os cabeçalhos das linked list
 } HashTable;
-
 
 
 HashTable* create_hash_table();
 
-
-unsigned int hash_string(const char *str); // uma funcao pra string
+unsigned int hash_string(const char *str);
 
 
 int hash_table_insert(HashTable *ht, const char *full_name, int leaf_id, int record_index_in_leaf);
