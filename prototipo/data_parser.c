@@ -1,12 +1,10 @@
 #include "data_parser.h"
 #include <string.h> 
 #include <stdio.h>
-#include <stdlib.h> // pra atoi
-#include <ctype.h>  // pra isspace
+#include <stdlib.h> // Para atoi
+#include <ctype.h>  // Para isspace
+#include <time.h> // Para obter o ano atual
 
-
-
-// funcao aux para remover espaços e quebras de linha
 void trim_whitespace(char *str) {
     int i;
     int begin = 0;
@@ -31,9 +29,12 @@ PlayerData parse_player_data(char *line) {
 
     char *token;
 
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int current_year = tm.tm_year + 1900;
 
-    // nome
-    token = strtok(line, "\\"); //  passa a string original
+    // name:
+    token = strtok(line, "\\");
     if (token) {
         trim_whitespace(token);
         char *name_end = strchr(token, ' ');
@@ -47,15 +48,21 @@ PlayerData parse_player_data(char *line) {
         }
     }
 
-    // ano de nascimento
-    token = strtok(NULL, "\\"); // Chamadas subsequentes: passa NULL
+    // birth_year:
+    token = strtok(NULL, "\\");
     if (token && strcmp(token, "-") != 0) {
         player.birth_year = atoi(token);
+        if ((current_year - player.birth_year) >= 39) {
+            player.is_retired = 1; // 1 para aposentado
+        } else {
+            player.is_retired = 0; // 0 para ativo
+        }
     } else {
         player.birth_year = -1;
+        player.is_retired = -1;
     }
 
-    // ano da morte
+    // death_year:
     token = strtok(NULL, "\\"); 
     if (token && strcmp(token, "-") != 0) {
         player.death_year = atoi(token);
@@ -63,14 +70,14 @@ PlayerData parse_player_data(char *line) {
         player.death_year = -1;
     }
 
-    // nacionalidade
+    // nacionality:
     token = strtok(NULL, "\\"); 
     if (token) {
         trim_whitespace(token);
         strcpy(player.nacionality, token);
     }
 
-    // melhor ranking
+    // best_rank:
     token = strtok(NULL, "\\"); 
     if (token && strcmp(token, "-") != 0) {
         char *rank_end = strchr(token, '(');
@@ -82,7 +89,7 @@ PlayerData parse_player_data(char *line) {
         player.best_rank = -1;
     }
 
-    // ano do melhor ranking
+    // best_rank_year:
     token = strtok(NULL, "\n"); 
     if (token && strcmp(token, "-") != 0) {
         char *year_end = strchr(token, '(');

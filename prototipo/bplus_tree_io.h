@@ -26,15 +26,16 @@ typedef struct PlayerData {
     int best_rank;
     int best_rank_year;
     int points;
+    int is_retired;
 } PlayerData;
-// PlayerData size = 116 bytes
+// PlayerData size = 120 bytes
 
 typedef struct InternalNode {
     int num_keys;
-    char keys[KEY_SIZE][NAME_SIZE];
+    int keys[KEY_SIZE]; //Editado para utilizar birth_year como chave
     int children_pointers[KEY_SIZE+1];
 } InternalNode;
-// InternalNode size = 192 bytes
+// InternalNode size = 48 bytes
 
 typedef struct LeafNode {
     int num_records;
@@ -42,7 +43,7 @@ typedef struct LeafNode {
     int next_leaf_id;
     PlayerData records[KEY_SIZE];
 } LeafNode;
-// LeafNode size = 592 bytes
+// LeafNode size = 612 bytes
 
 typedef struct BPTHeader {
     int order;
@@ -82,4 +83,5 @@ void print_internal_nodes(FILE *index_file);
 void print_leafs(BPTHeader *header);
 void print_leaf_aux(LeafNode *node);
 void print_player(PlayerData *record);
+void print_players_by_status(FILE *index_file, int is_retired_status);
 #endif
