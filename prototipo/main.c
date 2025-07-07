@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Includes para a criação de diretório
 #if defined(_WIN32)
 #include <direct.h> // Para _mkdir no Windows
 #else
@@ -16,9 +15,10 @@
 #include "tabela_hash_pais.h"
 #include "title_manager.h"
 #include "operations.h"
+#include "ranking_manager.h"
+#include "underdog_manager.h"
 
-// Protótipo do menu
-void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht, HashTableYear *year_ht);
+void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht);
 
 void criar_diretorio_se_nao_existir(const char *nome_pasta) {
     #if defined(_WIN32)
@@ -47,7 +47,6 @@ int main() {
     HashTableYear *year_ht = create_hash_table_year();
 
     // Passo 2: Parse os dados dos jogadores do arquivo texto.
-    // (Este é o bloco de código que você pediu para adicionar)
     printf("\n--- Carregando e Parseando Dados de tennis_players.txt ---\n");
     FILE *fp_players = fopen("tennis_players.txt", "r");
     if (fp_players == NULL) {
@@ -57,9 +56,8 @@ int main() {
     PlayerData players[310];
     char line[512];
     int player_count = 0;
-    fgets(line, sizeof(line), fp_players); // Ignora cabeçalho
+    fgets(line, sizeof(line), fp_players);
     while (fgets(line, sizeof(line), fp_players) != NULL && player_count < 310) {
-        // As seguintes condições eram do seu código original
         if (line[0] == '[' || line[0] == '\n' || strncmp(line, "Ano", 3) == 0) continue;
 
         players[player_count] = parse_player_data(line);
@@ -75,7 +73,6 @@ int main() {
     for (int i = 0; i < player_count; i++) {
         PlayerData p = players[i];
 
-        // Garante que um nome foi parseado antes de inserir
         if (strlen(p.name) > 0 || strlen(p.lastname) > 0) {
             PlayerLocation loc = bpt_insert(fp_index, p);
             if (loc.record_index != -1) {
@@ -91,7 +88,7 @@ int main() {
     printf("-> Estruturas de dados construidas com %d jogadores.\n", inserted_count);
 
     // Passo 4: Exibe o menu de operações
-    show_menu(fp_index, player_ht, country_ht, year_ht);
+    show_menu(fp_index, player_ht, country_ht);
 
     // Passo 5: Finalização
     printf("\n=======================================================\n");
@@ -105,38 +102,79 @@ int main() {
     return 0;
 }
 
-
-// A função show_menu(...) permanece exatamente a mesma de antes.
-// O código completo dela está aqui para garantir que não falte nada.
-void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht, HashTableYear *year_ht) {
+void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht) {
     int choice = 0;
     char input_buffer[100];
     char name_buffer[FULL_NAME_SIZE];
 
     do {
-        printf("\n\n=============== MENU DE OPCOES ===============\n");
-        printf("--- Operacoes de Modificacao ---\n");
-        printf(" 1. Inserir Novo Jogador\n");
-        printf(" 2. Remover Jogador por Nome\n");
-        printf(" 3. Remover TODOS os Jogadores de um Pais\n");
-        printf("--- Operacoes de Busca e Listagem ---\n");
-        printf(" 4. Buscar Jogador por Nome (via Hash)\n");
-        printf(" 5. Buscar Jogadores por Pais (via Hash)\n");
-        printf(" 6. Buscar Jogador por Nome Completo (via Arvore B+)\n");
-        printf(" 7. Listar Jogadores por Status (Ativo/Aposentado)\n");
-        printf("--- Relatorios e Verificacao ---\n");
-        printf(" 8. Gerar Relatorio de Titulos\n");
-        printf(" 9. Imprimir Estrutura da Arvore B+\n");
-        printf(" 10. Sair\n");
-        printf(" 11. Imprimir jogadores de um certo ano\n");
-        printf("============================================\n");
+        printf("\n\n==================== MENU DE OPCOES ====================\n");
+        printf("--- Buscas ---\n");
+        printf(" 1. Buscar Jogador por Nome\n");
+        printf(" 2. Buscar Jogadores por Pais\n");
+        printf(" 3. Buscar Jogador EM ATIVIDADE por Nome\n");
+        printf(" 4. Buscar Jogadores EM ATIVIDADE por Pais\n");
+        printf(" 5. Buscar Jogador APOSENTADO por Nome\n");
+        printf(" 6. Buscar Jogadores APOSENTADOS por Pais\n");
+        printf("\n--- Insercao e Remocao ---\n");
+        printf(" 7. Inserir Novo Jogador\n");
+        printf(" 8. Remover Jogador por Nome\n");
+        printf(" 9. Remover TODOS os Jogadores de um Pais\n");
+        printf(" 10. Remover Jogadores EM ATIVIDADE de um Pais\n");
+        printf(" 11. Remover Jogadores APOSENTADOS de um Pais\n");
+        printf("\n--- Relatorios e Listagem ---\n");
+        printf(" 12. Listar Jogadores por Status (Ativo/Aposentado)\n");
+        printf(" 13. Gerar Relatorio de Titulos (Geral)\n");
+        printf(" 14. Gerar Relatorio: Participantes do ATP Finals por Ano\n");
+        printf(" 15. Gerar Relatorio: Maiores Vencedores por Torneio\n");
+        printf(" 16. Imprimir Estrutura da Arvore B+\n");
+        printf(" 17. Gerar Relatorio: Jogadores que 'Furaram o Ranking'\n");
+        printf("\n--------------------------------------------------------\n");
+        printf(" 18. Sair\n");
+        printf("========================================================\n");
         printf("Escolha uma opcao: ");
 
-        if (fgets(input_buffer, sizeof(input_buffer), stdin)) { choice = atoi(input_buffer); }
-        else { choice = 0; }
+        if (fgets(input_buffer, sizeof(input_buffer), stdin)) {
+            choice = atoi(input_buffer);
+        } else {
+            choice = 0;
+        }
 
         switch (choice) {
-            case 1: {
+            // --- Buscas ---
+            case 1:
+                printf("\nDigite o nome completo do jogador: ");
+                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+                search_player_by_name(player_ht, name_buffer);
+                break;
+            case 2:
+                printf("\nDigite o pais: ");
+                fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
+                search_players_by_country(fp_index, country_ht, input_buffer);
+                break;
+            case 3:
+                printf("\nDigite o nome completo do jogador em atividade: ");
+                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+                search_active_player_by_name(player_ht, name_buffer);
+                break;
+            case 4:
+                printf("\nDigite o pais para buscar jogadores em atividade: ");
+                fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
+                search_active_players_by_country(fp_index, country_ht, input_buffer);
+                break;
+            case 5:
+                printf("\nDigite o nome completo do jogador aposentado: ");
+                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+                search_retired_player_by_name(player_ht, name_buffer);
+                break;
+            case 6:
+                printf("\nDigite o pais para buscar jogadores aposentados: ");
+                fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
+                search_retired_players_by_country(fp_index, country_ht, input_buffer);
+                break;
+
+            // --- Inserção e Remoção ---
+            case 7: {
                 PlayerData p = {0};
                 printf("\n--- Inserindo Novo Jogador ---\nNome: ");
                 fgets(p.name, sizeof(p.name), stdin); p.name[strcspn(p.name, "\n")] = 0;
@@ -148,78 +186,57 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht,
                 fgets(p.nacionality, sizeof(p.nacionality), stdin); p.nacionality[strcspn(p.nacionality, "\n")] = 0;
                 int current_year = 2025;
                 p.is_retired = (p.birth_year > 0 && (current_year - p.birth_year) >= 39) ? 1 : 0;
-
-                char full_name_check[FULL_NAME_SIZE];
-                sprintf(full_name_check, "%s %s", p.name, p.lastname);
-
-                if (strlen(full_name_check) > 1 && p.birth_year > 1900) {
-                    PlayerLocation loc = bpt_insert(fp_index, p);
-                    if (loc.leaf_id != -1) {
-                        sprintf(name_buffer, "%s %s", p.name, p.lastname);
-                        hash_table_insert(player_ht, name_buffer, loc.leaf_id, loc.record_index);
-                        inserir_tabela_hash_pais(country_ht, p.nacionality, name_buffer, loc.leaf_id, loc.record_index);
-                        printf("-> Jogador '%s' inserido com sucesso.\n", name_buffer);
-                    }
-                } else { printf("-> Erro: Dados invalidos.\n"); }
+                PlayerLocation loc = bpt_insert(fp_index, p);
+                if (loc.leaf_id != -1) {
+                    sprintf(name_buffer, "%s %s", p.name, p.lastname);
+                    hash_table_insert(player_ht, name_buffer, loc.leaf_id, loc.record_index);
+                    inserir_tabela_hash_pais(country_ht, p.nacionality, name_buffer, loc.leaf_id, loc.record_index);
+                    printf("-> Jogador '%s' inserido com sucesso.\n", name_buffer);
+                }
                 break;
             }
-            case 2: {
+            case 8:
                 printf("\nDigite o nome completo do jogador a ser REMOVIDO: ");
                 fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
                 delete_player_by_name(fp_index, player_ht, country_ht, name_buffer);
                 break;
-            }
-            case 3: {
+            case 9:
                 printf("\nDigite o pais para remover TODOS os seus jogadores: ");
                 fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
                 delete_players_by_country(fp_index, player_ht, country_ht, input_buffer);
                 break;
-            }
-            case 4: {
-                printf("\nDigite o nome completo do jogador: ");
-                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
-                search_player_by_name(player_ht, name_buffer);
-                break;
-            }
-            case 5: {
-                printf("\nDigite o pais: ");
+            case 10:
+                printf("\nDigite o pais para remover seus jogadores EM ATIVIDADE: ");
                 fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
-                search_players_by_country(country_ht, input_buffer);
+                delete_active_players_by_country(fp_index, player_ht, country_ht, input_buffer);
                 break;
-            }
-            case 6: {
-                printf("\nDigite o nome completo do jogador para buscar na Arvore B+: ");
-                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+            case 11:
+                printf("\nDigite o pais para remover seus jogadores APOSENTADOS: ");
+                fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
+                delete_retired_players_by_country(fp_index, player_ht, country_ht, input_buffer);
+                break;
 
-                if (strlen(name_buffer) > 0) {
-                    rewind(fp_index);
-                    PlayerData* jogador_encontrado = bpt_search(fp_index, name_buffer);
-                    if (jogador_encontrado != NULL) {
-                        printf("-> Jogador encontrado diretamente na Arvore B+: ");
-                        print_player(jogador_encontrado);
-                        free(jogador_encontrado);
-                    } else {
-                        printf("-> Nenhum jogador encontrado com o nome '%s' na Arvore B+.\n", name_buffer);
-                    }
-                } else { printf("Nome invalido.\n"); }
-                break;
-            }
-            case 7: {
+            // --- Relatórios e Listagem ---
+            case 12:
                  printf("\nListando jogadores por status...\n");
                  rewind(fp_index);
-                 print_players_by_status(fp_index, 1); // Aposentados
+                 print_players_by_status(fp_index, 1);
                  printf("\n");
                  rewind(fp_index);
-                 print_players_by_status(fp_index, 0); // Ativos
+                 print_players_by_status(fp_index, 0);
                  break;
-            }
-            case 8: {
-                printf("\nGerando Relatorio Principal de Titulos...\n");
+            case 13:
+                printf("\nGerando Relatorio de Titulos (Geral)...\n");
                 rewind(fp_index);
                 report_titles_by_status(fp_index, "champions.txt");
                 break;
-            }
-            case 9: {
+            case 14:
+                report_atp_finals_participants_by_year("champions.txt");
+                break;
+            case 15:
+                report_tournament_winners("champions.txt");
+                break;
+            case 16:
                 printf("\nImprimindo estrutura da Arvore B+...\n");
                 rewind(fp_index);
                 BPTHeader *header = read_header(fp_index);
@@ -232,17 +249,17 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht,
                     free(header);
                 }
                 break;
-            }
-            case 10: { printf("Encerrando...\n"); break; }
-            case 11: {
-                int year_to_search;
-                printf("Digite o ano para imprimir jogadores: ");
-                scanf("%d", &year_to_search);
-                // HashEntryYear *entry = search_hash_table_year(year_ht, year_to_search);
-                search_players_by_year(year_ht, year_to_search);
+            case 17:
+                report_underdog_winners("tennis_players.txt", "champions.txt");
                 break;
-            }
-            default: printf("Opcao invalida. Tente novamente.\n"); break;
+
+            // --- Sair ---
+            case 18:
+                printf("Encerrando...\n");
+                break;
+            default:
+                printf("Opcao invalida. Tente novamente.\n");
+                break;
         }
-    } while (choice != 10);
+    } while (choice != 18);
 }

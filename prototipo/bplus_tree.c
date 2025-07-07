@@ -22,15 +22,6 @@ static void merge_nodes(FILE* index_file, int parent_offset, int node_offset, in
 static void get_full_name(const PlayerData* p, char* full_name_out) {
     if (p && (strlen(p->name) > 0 || strlen(p->lastname) > 0)) {
         sprintf(full_name_out, "%s %s", p->name, p->lastname);
-        // Lidar com nomes que podem ter espaços extras
-        char temp[FULL_NAME_SIZE];
-        char *ptr = strtok(full_name_out, " ");
-        strcpy(temp, ptr);
-        while((ptr = strtok(NULL, " ")) != NULL){
-            strcat(temp, " ");
-            strcat(temp, ptr);
-        }
-        strcpy(full_name_out, temp);
     } else {
         full_name_out[0] = '\0';
     }
@@ -297,7 +288,7 @@ static PlayerLocation insert_into_parent(FILE *index_file, int parent_offset, co
     strcpy(temp_keys[pos], key);
     temp_pointers[pos + 1] = right_child_pointer;
     memcpy(&temp_keys[pos + 1], &parent->keys[pos], (KEY_SIZE - pos) * sizeof(parent->keys[0]));
-    memcpy(&temp_pointers[pos + 2], &parent->children_pointers[pos + 1], (KEY_SIZE + 1 - pos) * sizeof(int));
+    memcpy(&temp_pointers[pos + 2], &parent->children_pointers[pos + 1], (parent->num_keys - pos) * sizeof(int));
 
     int split_point = KEY_SIZE / 2;
     char promoted_key[FULL_NAME_SIZE];
