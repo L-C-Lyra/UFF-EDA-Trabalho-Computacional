@@ -77,7 +77,7 @@ int main() {
         // Garante que um nome foi parseado antes de inserir
         if (strlen(p.name) > 0 || strlen(p.lastname) > 0) {
             PlayerLocation loc = bpt_insert(fp_index, p);
-            if (loc.leaf_id != -1) {
+            if (loc.record_index != -1) {
                 char full_name[FULL_NAME_SIZE];
                 sprintf(full_name, "%s %s", p.name, p.lastname);
                 hash_table_insert(player_ht, full_name, loc.leaf_id, loc.record_index);
