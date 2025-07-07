@@ -265,5 +265,5 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht,
                 printf("Opcao invalida. Tente novamente.\n");
                 break;
         }
-    } while (choice != 18);
+    } while (choice != 0);
 }
