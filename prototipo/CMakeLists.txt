@@ -22,5 +22,9 @@ add_executable(prototipo
         title_manager.c
         operations.h
         operations.c
+        ranking_manager.h
+        ranking_manager.c
+        underdog_manager.h
+        underdog_manager.c
         # teste.c
         )

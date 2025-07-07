@@ -15,6 +15,8 @@
 #include "tabela_hash_pais.h"
 #include "title_manager.h"
 #include "operations.h"
+#include "ranking_manager.h"
+#include "underdog_manager.h"
 
 void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht);
 
@@ -119,10 +121,13 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
         printf(" 11. Remover Jogadores APOSENTADOS de um Pais\n");
         printf("\n--- Relatorios e Listagem ---\n");
         printf(" 12. Listar Jogadores por Status (Ativo/Aposentado)\n");
-        printf(" 13. Gerar Relatorio de Titulos\n");
-        printf(" 14. Imprimir Estrutura da Arvore B+\n");
+        printf(" 13. Gerar Relatorio de Titulos (Geral)\n");
+        printf(" 14. Gerar Relatorio: Participantes do ATP Finals por Ano\n");
+        printf(" 15. Gerar Relatorio: Maiores Vencedores por Torneio\n");
+        printf(" 16. Imprimir Estrutura da Arvore B+\n");
+        printf(" 17. Gerar Relatorio: Jogadores que 'Furaram o Ranking'\n");
         printf("\n--------------------------------------------------------\n");
-        printf(" 15. Sair\n");
+        printf(" 18. Sair\n");
         printf("========================================================\n");
         printf("Escolha uma opcao: ");
 
@@ -218,11 +223,17 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                  print_players_by_status(fp_index, 0);
                  break;
             case 13:
-                printf("\nGerando Relatorio Principal de Titulos...\n");
+                printf("\nGerando Relatorio de Titulos (Geral)...\n");
                 rewind(fp_index);
                 report_titles_by_status(fp_index, "champions.txt");
                 break;
             case 14:
+                report_atp_finals_participants_by_year("champions.txt");
+                break;
+            case 15:
+                report_tournament_winners("champions.txt");
+                break;
+            case 16:
                 printf("\nImprimindo estrutura da Arvore B+...\n");
                 rewind(fp_index);
                 BPTHeader *header = read_header(fp_index);
@@ -235,14 +246,17 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                     free(header);
                 }
                 break;
+            case 17:
+                report_underdog_winners("tennis_players.txt", "champions.txt");
+                break;
 
             // --- Sair ---
-            case 15:
+            case 18:
                 printf("Encerrando...\n");
                 break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
                 break;
         }
-    } while (choice != 15);
+    } while (choice != 18);
 }
