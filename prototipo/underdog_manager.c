@@ -1,10 +1,18 @@
+#ifndef _WIN32
 #define _DEFAULT_SOURCE
+#endif
+
 #include "underdog_manager.h"
-#include "data_parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#if defined(_WIN32)
+char* strtok_r(char* str, const char* delim, char** saveptr) {
+    return strtok_s(str, delim, saveptr);
+}
+#endif
 
 #define HASH_SIZE 1009
 

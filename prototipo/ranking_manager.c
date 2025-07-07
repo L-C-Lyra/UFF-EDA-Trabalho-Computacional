@@ -1,9 +1,18 @@
+#ifndef _WIN32
 #define _DEFAULT_SOURCE
+#endif
+
 #include "ranking_manager.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#if defined(_WIN32)
+char* strtok_r(char* str, const char* delim, char** saveptr) {
+    return strtok_s(str, delim, saveptr);
+}
+#endif
 
 // Estrutura auxiliar para a tabela hash de jogadores
 typedef struct PlayerNode {
