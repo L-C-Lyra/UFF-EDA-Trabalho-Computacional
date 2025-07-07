@@ -26,5 +26,7 @@ add_executable(prototipo
         ranking_manager.c
         underdog_manager.h
         underdog_manager.c
+        hash_table_year.c
+        hash_table_year.h
         # teste.c
         )

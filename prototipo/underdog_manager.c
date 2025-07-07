@@ -7,30 +7,6 @@
 
 #define HASH_SIZE 1009
 
-#if defined(_WIN32)
-char* strtok_r(char* str, const char* delim, char** saveptr) {
-    char* p;
-    if (str == NULL) {
-        str = *saveptr;
-    }
-    if (*str == '\0') {
-        *saveptr = str;
-        return NULL;
-    }
-    p = str + strspn(str, delim);
-    if (*p == '\0') {
-        *saveptr = p;
-        return NULL;
-    }
-    *saveptr = p + strcspn(p, delim);
-    if (**saveptr != '\0') {
-        **saveptr = '\0';
-        (*saveptr)++;
-    }
-    return p;
-}
-#endif
-
 typedef struct RankNode {
     char name[FULL_NAME_SIZE];
     int best_rank;
