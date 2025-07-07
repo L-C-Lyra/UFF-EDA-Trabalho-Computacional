@@ -103,23 +103,27 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
     char name_buffer[FULL_NAME_SIZE];
 
     do {
-        printf("\n\n=============== MENU DE OPCOES ===============\n");
-        printf("--- Modificacao ---\n");
-        printf(" 1. Inserir Novo Jogador\n");
-        printf(" 2. Remover Jogador por Nome\n");
-        printf(" 3. Remover TODOS os Jogadores de um Pais\n");
-        printf("\n--- Buscas ---\n");
-        printf(" 4. Buscar Jogador por Nome\n");
-        printf(" 5. Buscar Jogadores por Pais\n");
-        printf(" 6. Buscar Jogador EM ATIVIDADE por Nome\n");
-        printf(" 7. Buscar Jogadores EM ATIVIDADE por Pais\n");
+        printf("\n\n==================== MENU DE OPCOES ====================\n");
+        printf("--- Buscas ---\n");
+        printf(" 1. Buscar Jogador por Nome\n");
+        printf(" 2. Buscar Jogadores por Pais\n");
+        printf(" 3. Buscar Jogador EM ATIVIDADE por Nome\n");
+        printf(" 4. Buscar Jogadores EM ATIVIDADE por Pais\n");
+        printf(" 5. Buscar Jogador APOSENTADO por Nome\n");
+        printf(" 6. Buscar Jogadores APOSENTADOS por Pais\n");
+        printf("\n--- Insercao e Remocao ---\n");
+        printf(" 7. Inserir Novo Jogador\n");
+        printf(" 8. Remover Jogador por Nome\n");
+        printf(" 9. Remover TODOS os Jogadores de um Pais\n");
+        printf(" 10. Remover Jogadores EM ATIVIDADE de um Pais\n");
+        printf(" 11. Remover Jogadores APOSENTADOS de um Pais\n");
         printf("\n--- Relatorios e Listagem ---\n");
-        printf(" 8. Listar Jogadores por Status (Ativo/Aposentado)\n");
-        printf(" 9. Gerar Relatorio de Titulos\n");
-        printf(" 10. Imprimir Estrutura da Arvore B+\n");
-        printf("\n----------------------------------------------\n");
-        printf(" 11. Sair\n");
-        printf("==============================================\n");
+        printf(" 12. Listar Jogadores por Status (Ativo/Aposentado)\n");
+        printf(" 13. Gerar Relatorio de Titulos\n");
+        printf(" 14. Imprimir Estrutura da Arvore B+\n");
+        printf("\n--------------------------------------------------------\n");
+        printf(" 15. Sair\n");
+        printf("========================================================\n");
         printf("Escolha uma opcao: ");
 
         if (fgets(input_buffer, sizeof(input_buffer), stdin)) {
@@ -129,7 +133,40 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
         }
 
         switch (choice) {
-            case 1: { // Inserir Novo Jogador
+            // --- Buscas ---
+            case 1:
+                printf("\nDigite o nome completo do jogador: ");
+                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+                search_player_by_name(player_ht, name_buffer);
+                break;
+            case 2:
+                printf("\nDigite o pais: ");
+                fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
+                search_players_by_country(fp_index, country_ht, input_buffer);
+                break;
+            case 3:
+                printf("\nDigite o nome completo do jogador em atividade: ");
+                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+                search_active_player_by_name(player_ht, name_buffer);
+                break;
+            case 4:
+                printf("\nDigite o pais para buscar jogadores em atividade: ");
+                fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
+                search_active_players_by_country(fp_index, country_ht, input_buffer);
+                break;
+            case 5:
+                printf("\nDigite o nome completo do jogador aposentado: ");
+                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+                search_retired_player_by_name(player_ht, name_buffer);
+                break;
+            case 6:
+                printf("\nDigite o pais para buscar jogadores aposentados: ");
+                fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
+                search_retired_players_by_country(fp_index, country_ht, input_buffer);
+                break;
+
+            // --- Inserção e Remoção ---
+            case 7: {
                 PlayerData p = {0};
                 printf("\n--- Inserindo Novo Jogador ---\nNome: ");
                 fgets(p.name, sizeof(p.name), stdin); p.name[strcspn(p.name, "\n")] = 0;
@@ -139,75 +176,53 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                 fgets(input_buffer, sizeof(input_buffer), stdin); p.birth_year = atoi(input_buffer);
                 printf("Nacionalidade: ");
                 fgets(p.nacionality, sizeof(p.nacionality), stdin); p.nacionality[strcspn(p.nacionality, "\n")] = 0;
-                int current_year = 2025; // Ano de referência
+                int current_year = 2025;
                 p.is_retired = (p.birth_year > 0 && (current_year - p.birth_year) >= 39) ? 1 : 0;
-
-                char full_name_check[FULL_NAME_SIZE];
-                sprintf(full_name_check, "%s %s", p.name, p.lastname);
-
-                if (strlen(full_name_check) > 1 && p.birth_year > 1900) {
-                    PlayerLocation loc = bpt_insert(fp_index, p);
-                    if (loc.leaf_id != -1) {
-                        sprintf(name_buffer, "%s %s", p.name, p.lastname);
-                        hash_table_insert(player_ht, name_buffer, loc.leaf_id, loc.record_index);
-                        inserir_tabela_hash_pais(country_ht, p.nacionality, name_buffer, loc.leaf_id, loc.record_index);
-                        printf("-> Jogador '%s' inserido com sucesso.\n", name_buffer);
-                    }
-                } else { printf("-> Erro: Dados invalidos.\n"); }
+                PlayerLocation loc = bpt_insert(fp_index, p);
+                if (loc.leaf_id != -1) {
+                    sprintf(name_buffer, "%s %s", p.name, p.lastname);
+                    hash_table_insert(player_ht, name_buffer, loc.leaf_id, loc.record_index);
+                    inserir_tabela_hash_pais(country_ht, p.nacionality, name_buffer, loc.leaf_id, loc.record_index);
+                    printf("-> Jogador '%s' inserido com sucesso.\n", name_buffer);
+                }
                 break;
             }
-            case 2: { // Remover Jogador por Nome
+            case 8:
                 printf("\nDigite o nome completo do jogador a ser REMOVIDO: ");
                 fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
                 delete_player_by_name(fp_index, player_ht, country_ht, name_buffer);
                 break;
-            }
-            case 3: { // Remover TODOS os Jogadores de um Pais
+            case 9:
                 printf("\nDigite o pais para remover TODOS os seus jogadores: ");
                 fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
                 delete_players_by_country(fp_index, player_ht, country_ht, input_buffer);
                 break;
-            }
-            case 4: { // Buscar Jogador por Nome
-                printf("\nDigite o nome completo do jogador: ");
-                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
-                search_player_by_name(player_ht, name_buffer);
-                break;
-            }
-            case 5: { // Buscar Jogadores por Pais
-                printf("\nDigite o pais: ");
+            case 10:
+                printf("\nDigite o pais para remover seus jogadores EM ATIVIDADE: ");
                 fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
-                search_players_by_country(fp_index, country_ht, input_buffer);
+                delete_active_players_by_country(fp_index, player_ht, country_ht, input_buffer);
                 break;
-            }
-            case 6: { // Buscar Jogador EM ATIVIDADE por Nome
-                printf("\nDigite o nome completo do jogador em atividade: ");
-                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
-                search_active_player_by_name(player_ht, name_buffer);
-                break;
-            }
-            case 7: { // Buscar Jogadores EM ATIVIDADE por Pais
-                printf("\nDigite o pais para buscar jogadores em atividade: ");
+            case 11:
+                printf("\nDigite o pais para remover seus jogadores APOSENTADOS: ");
                 fgets(input_buffer, sizeof(input_buffer), stdin); input_buffer[strcspn(input_buffer, "\n")] = 0;
-                search_active_players_by_country(fp_index, country_ht, input_buffer);
+                delete_retired_players_by_country(fp_index, player_ht, country_ht, input_buffer);
                 break;
-            }
-            case 8: { // Listar Jogadores por Status
+
+            // --- Relatórios e Listagem ---
+            case 12:
                  printf("\nListando jogadores por status...\n");
                  rewind(fp_index);
-                 print_players_by_status(fp_index, 1); // Aposentados
+                 print_players_by_status(fp_index, 1);
                  printf("\n");
                  rewind(fp_index);
-                 print_players_by_status(fp_index, 0); // Ativos
+                 print_players_by_status(fp_index, 0);
                  break;
-            }
-            case 9: { // Gerar Relatorio de Titulos
+            case 13:
                 printf("\nGerando Relatorio Principal de Titulos...\n");
                 rewind(fp_index);
                 report_titles_by_status(fp_index, "champions.txt");
                 break;
-            }
-            case 10: { // Imprimir Estrutura da Arvore B+
+            case 14:
                 printf("\nImprimindo estrutura da Arvore B+...\n");
                 rewind(fp_index);
                 BPTHeader *header = read_header(fp_index);
@@ -220,14 +235,14 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                     free(header);
                 }
                 break;
-            }
-            case 11: { // Sair
+
+            // --- Sair ---
+            case 15:
                 printf("Encerrando...\n");
                 break;
-            }
             default:
                 printf("Opcao invalida. Tente novamente.\n");
                 break;
         }
-    } while (choice != 11);
+    } while (choice != 15);
 }

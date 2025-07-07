@@ -98,6 +98,50 @@ void search_active_players_by_country(FILE* index_file, TabelaHashPais* country_
     printf("-> Total de %d jogadores em atividade encontrados para '%s'.\n", count, country_name);
 }
 
+void search_retired_player_by_name(HashTable* player_ht, const char* full_name) {
+    printf("\nBuscando jogador APOSENTADO por nome: '%s'...\n", full_name);
+    int leaf_id, record_idx;
+
+    if (hash_table_search(player_ht, full_name, &leaf_id, &record_idx)) {
+        LeafNode* leaf = read_leaf_node(leaf_id);
+        if (leaf) {
+            PlayerData* p = &leaf->records[record_idx];
+            if (p->is_retired == 1) {
+                print_player(p);
+            } else {
+                printf("-> Jogador '%s' encontrado, mas esta EM ATIVIDADE.\n", full_name);
+            }
+            free(leaf);
+        }
+    } else {
+        printf("-> Jogador '%s' NAO ENCONTRADO.\n", full_name);
+    }
+}
+
+void search_retired_players_by_country(FILE* index_file, TabelaHashPais* country_ht, const char* country_name) {
+    printf("\nBuscando jogadores APOSENTADOS de '%s'...\n", country_name);
+    NoLocalizacaoJogador* player_node = buscar_tabela_hash_pais(country_ht, country_name);
+
+    if (player_node == NULL) {
+        printf("-> Nenhum jogador encontrado para o pais '%s'.\n", country_name);
+        return;
+    }
+
+    int count = 0;
+    while(player_node != NULL) {
+        PlayerData* found_player = bpt_search(index_file, player_node->nome_completo);
+        if (found_player != NULL) {
+            if (found_player->is_retired == 1) {
+                print_player(found_player);
+                count++;
+            }
+            free(found_player);
+        }
+        player_node = player_node->proximo;
+    }
+    printf("-> Total de %d jogadores aposentados encontrados para '%s'.\n", count, country_name);
+}
+
 void delete_player_by_name(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* full_name) {
     int leaf_id, record_idx;
 
@@ -150,4 +194,68 @@ void delete_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHas
     }
 
     printf("-> Operacao concluida. %d jogador(es) de '%s' foram removidos.\n", count, country_name);
+}
+
+void delete_active_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* country_name) {
+    printf("\nIniciando remocao de jogadores EM ATIVIDADE de '%s'...\n", country_name);
+    NoLocalizacaoJogador* player_list = buscar_tabela_hash_pais(country_ht, country_name);
+
+    if (player_list == NULL) {
+        printf("-> Nenhum jogador encontrado para o pais '%s'.\n", country_name);
+        return;
+    }
+
+    char names_to_delete[300][FULL_NAME_SIZE];
+    int count = 0;
+    NoLocalizacaoJogador* current = player_list;
+
+    while(current != NULL && count < 300) {
+        PlayerData* p = bpt_search(index_file, current->nome_completo);
+        if (p && p->is_retired == 0) {
+            strcpy(names_to_delete[count++], current->nome_completo);
+        }
+        if (p) free(p);
+        current = current->proximo;
+    }
+
+    if (count == 0) {
+        printf("-> Nenhum jogador em atividade para remover em '%s'.\n", country_name);
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        delete_player_by_name(index_file, player_ht, country_ht, names_to_delete[i]);
+    }
+    printf("-> Operacao concluida. %d jogador(es) em atividade de '%s' foram removidos.\n", count, country_name);
+}
+
+void delete_retired_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* country_name) {
+    printf("\nIniciando remocao de jogadores APOSENTADOS de '%s'...\n", country_name);
+    NoLocalizacaoJogador* player_list = buscar_tabela_hash_pais(country_ht, country_name);
+
+    if (player_list == NULL) {
+        printf("-> Nenhum jogador encontrado para o pais '%s'.\n", country_name);
+        return;
+    }
+
+    char names_to_delete[300][FULL_NAME_SIZE];
+    int count = 0;
+    NoLocalizacaoJogador* current = player_list;
+
+    while(current != NULL && count < 300) {
+        PlayerData* p = bpt_search(index_file, current->nome_completo);
+        if (p && p->is_retired == 1) {
+            strcpy(names_to_delete[count++], current->nome_completo);
+        }
+        if (p) free(p);
+        current = current->proximo;
+    }
+
+    if (count == 0) {
+        printf("-> Nenhum jogador aposentado para remover em '%s'.\n", country_name);
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        delete_player_by_name(index_file, player_ht, country_ht, names_to_delete[i]);
+    }
+    printf("-> Operacao concluida. %d jogador(es) aposentados de '%s' foram removidos.\n", count, country_name);
 }
