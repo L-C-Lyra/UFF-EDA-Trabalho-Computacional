@@ -8,6 +8,7 @@
 
 #define NAME_SIZE 32
 #define FILENAME_SIZE 32
+#define FULL_NAME_SIZE (NAME_SIZE * 2)
 #define BTREE_ORDER 3
 #define KEY_SIZE (2*BTREE_ORDER - 1)
 
@@ -18,9 +19,9 @@
 */
 
 typedef struct PlayerData {
-    char name[NAME_SIZE]; 
-    char lastname[NAME_SIZE]; 
-    int birth_year; 
+    char name[NAME_SIZE];
+    char lastname[NAME_SIZE];
+    int birth_year;
     int death_year;
     char nacionality[NAME_SIZE];
     int best_rank;
@@ -28,14 +29,12 @@ typedef struct PlayerData {
     int points;
     int is_retired;
 } PlayerData;
-// PlayerData size = 120 bytes
 
 typedef struct InternalNode {
     int num_keys;
-    int keys[KEY_SIZE]; //Editado para utilizar birth_year como chave
+    char keys[KEY_SIZE][FULL_NAME_SIZE];
     int children_pointers[KEY_SIZE+1];
 } InternalNode;
-// InternalNode size = 48 bytes
 
 typedef struct LeafNode {
     int num_records;
@@ -43,7 +42,6 @@ typedef struct LeafNode {
     int next_leaf_id;
     PlayerData records[KEY_SIZE];
 } LeafNode;
-// LeafNode size = 612 bytes
 
 typedef struct BPTHeader {
     int order;
@@ -53,7 +51,6 @@ typedef struct BPTHeader {
     int next_free_offset;
     int next_leaf_id;
 } BPTHeader;
-// BPTHeader size = 24 bytes
 
 /*
 -----------------------------------------------------

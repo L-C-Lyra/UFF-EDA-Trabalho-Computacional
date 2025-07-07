@@ -12,10 +12,10 @@ typedef struct {
 // A função de inserção agora retorna a localização do registo inserido.
 PlayerLocation bpt_insert(FILE *index_file, PlayerData record);
 
-// Busca um jogador pelo ANO DE NASCIMENTO.
-PlayerData *bpt_search(FILE *index_file, int birth_year_key);
+// Busca um jogador pelo NOME COMPLETO.
+PlayerData *bpt_search(FILE *index_file, const char* full_name_key);
 
-// Remove um jogador da árvore pela sua chave (ano) e nome completo.
-void bpt_delete(FILE* index_file, int birth_year_key, const char* full_name);
+// Remove um jogador da árvore pelo seu NOME COMPLETO.
+void bpt_delete(FILE* index_file, const char* full_name_key);
 
 #endif
