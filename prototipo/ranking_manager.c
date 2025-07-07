@@ -4,7 +4,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
 // Estrutura auxiliar para a tabela hash de jogadores
 typedef struct PlayerNode {
     char name[FULL_NAME_SIZE];
@@ -154,8 +153,7 @@ void report_atp_finals_participants_by_year(const char* champions_filename) {
 
             if (i >= 1 && i <= 4) { perf->points += 2000; perf->grand_slams++; }
             else if (i >= 7 && i <= 15) { perf->points += 1000; perf->atp_1000s++; }
-            else if (i == 5) { perf->points += 1500; }
-            else if (i == 6) { perf->points += 800; }
+            else if (i == 5 || i == 6) { perf->points += 0; }
         }
     }
 
