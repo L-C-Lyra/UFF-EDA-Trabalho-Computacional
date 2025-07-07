@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include "underdog_manager.h"
 #include "data_parser.h"
 #include <stdio.h>
