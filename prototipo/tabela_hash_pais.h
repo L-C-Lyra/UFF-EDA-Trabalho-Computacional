@@ -36,6 +36,8 @@ int inserir_tabela_hash_pais(TabelaHashPais *cht, const char *nacionalidade, con
 
 NoLocalizacaoJogador* buscar_tabela_hash_pais(TabelaHashPais *cht, const char *nacionalidade);
 
+void deletar_tabela_hash_pais(TabelaHashPais* cht, const char* nacionalidade, const char* full_name);
+
 void liberar_tabela_hash_pais(TabelaHashPais *cht);
 
 #endif 

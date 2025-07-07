@@ -79,6 +79,29 @@ int hash_table_search(HashTable *ht, const char *full_name, int *leaf_id, int *r
     return 0; 
 }
 
+void hash_table_delete(HashTable* ht, const char* full_name) {
+    if (!ht || !full_name) return;
+
+    unsigned int index = hash_string(full_name);
+
+    HashEntry* current = ht->list_heads[index];
+    HashEntry* prev = NULL;
+
+    while (current != NULL) {
+        if (strcmp(current->full_name, full_name) == 0) {
+            if (prev == NULL) {
+                ht->list_heads[index] = current->next;
+            }
+            else {
+                prev->next = current->next;
+            }
+            free(current);
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
+}
 
 void free_hash_table(HashTable *ht) {
     if (ht == NULL) {
@@ -89,7 +112,7 @@ void free_hash_table(HashTable *ht) {
         while (current != NULL) {
             HashEntry *temp = current;
             current = current->next;
-            free(temp); // 
+            free(temp);
         }
         ht->list_heads[i] = NULL; 
     }

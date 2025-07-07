@@ -32,6 +32,8 @@ int hash_table_insert(HashTable *ht, const char *full_name, int leaf_id, int rec
 
 int hash_table_search(HashTable *ht, const char *full_name, int *leaf_id, int *record_index_in_leaf);
 
+void hash_table_delete(HashTable *ht, const char *full_name);
+
 void free_hash_table(HashTable *ht);
 
 #endif 

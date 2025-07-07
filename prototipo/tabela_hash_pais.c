@@ -86,6 +86,37 @@ NoLocalizacaoJogador* buscar_tabela_hash_pais(TabelaHashPais *cht, const char *n
     return NULL;
 }
 
+void deletar_tabela_hash_pais(TabelaHashPais* cht, const char* nacionalidade, const char* full_name) {
+    if (!cht || !nacionalidade || !full_name) return;
+
+    unsigned int index = hash_string_pais(nacionalidade);
+
+    EntradaHashPais* country_entry = cht->list_heads[index];
+    while (country_entry != NULL && strcmp(country_entry->nacionalidade, nacionalidade) != 0) {
+        country_entry = country_entry->proximo;
+    }
+
+    if (country_entry == NULL) return;
+
+    NoLocalizacaoJogador* current_player = country_entry->lista_jogadores_cabeca;
+    NoLocalizacaoJogador* prev_player = NULL;
+
+    while (current_player != NULL) {
+        if (strcmp(current_player->nome_completo, full_name) == 0) {
+            if (prev_player == NULL) {
+                country_entry->lista_jogadores_cabeca = current_player->proximo;
+            }
+            else {
+                prev_player->proximo = current_player->proximo;
+            }
+            free(current_player);
+            return;
+        }
+        prev_player = current_player;
+        current_player = current_player->proximo;
+    }
+}
+
 void liberar_tabela_hash_pais(TabelaHashPais *cht) {
     if (cht == NULL) {
         return;
