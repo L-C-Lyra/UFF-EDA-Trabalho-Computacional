@@ -42,7 +42,7 @@ InternalNode *read_internal_node(FILE *index_file, int node_offset) {
 
 void write_leaf_node(int leaf_id, LeafNode *node) {
     char filename[FILENAME_SIZE];
-    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    sprintf(filename, "folhas/folha_%03d.bin", (-leaf_id));
     FILE *leaf_file = fopen(filename, "wb");
     if (leaf_file == NULL) {
         perror("Falha ao abrir arquivo folha");
@@ -60,7 +60,7 @@ LeafNode *read_leaf_node(int leaf_id) {
     }
 
     char filename[FILENAME_SIZE];
-    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    sprintf(filename, "folhas/folha_%03d.bin", (-leaf_id));
     FILE *leaf_file = fopen(filename, "rb");
 
     if (leaf_file == NULL) {

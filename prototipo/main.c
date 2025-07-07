@@ -17,6 +17,7 @@ int main() {
     printf("        INICIALIZANDO TRABALHO COMPUTACIONAL\n");
     printf("=======================================================\n\n");
 
+
     FILE *fp_index = fopen("indices_t.bin", "wb+");
     if (fp_index == NULL) { perror("Erro critico ao criar/abrir 'indices_t.bin'"); return 1; }
     init_BPT(fp_index, BTREE_ORDER);
@@ -35,6 +36,7 @@ int main() {
         if (strlen(line) < 10) continue;
         PlayerData p = parse_player_data(line);
         if (p.birth_year > 0) {
+            // printf("BY: %d\n", p.birth_year);
             PlayerLocation loc = bpt_insert(fp_index, p);
             if (loc.leaf_id != -1) {
                 char full_name[NAME_SIZE * 2];
@@ -42,6 +44,9 @@ int main() {
                 hash_table_insert(player_ht, full_name, loc.leaf_id, loc.record_index);
                 inserir_tabela_hash_pais(country_ht, p.nacionality, full_name, loc.leaf_id, loc.record_index);
                 player_count++;
+            }
+            else {
+                print_player(&p);
             }
         }
     }

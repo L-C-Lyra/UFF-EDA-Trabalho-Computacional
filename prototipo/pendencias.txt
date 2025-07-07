@@ -1,0 +1,7 @@
+→ se existem jogadores que nasceram no mesmo ano que seu compatriota (que possui um
+ranking) ganhou algum grand slam?
+→ se ninguém tivesse se aposentado ainda, qual seria a pontuação acumulada de cada um dos
+jogadores, em ordem decrescente?
+→ indique o ranking (até 25) por ano, de acordo com a pontuação obtida em cada ano.
+→ se existe algum jogador que ganhou todos os grand slams no mesmo ano? Se sim, retornar
+o(s) nome(s) do(s) jogador(es) e o(s) ano(s).

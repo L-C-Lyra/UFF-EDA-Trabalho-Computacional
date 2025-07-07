@@ -7,7 +7,7 @@
 #include <string.h>
 
 #define NAME_SIZE 32
-#define FILENAME_SIZE 16
+#define FILENAME_SIZE 32
 #define BTREE_ORDER 3
 #define KEY_SIZE (2*BTREE_ORDER - 1)
 
