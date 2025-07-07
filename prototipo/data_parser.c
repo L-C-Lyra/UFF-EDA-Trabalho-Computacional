@@ -74,6 +74,17 @@ PlayerData parse_player_data(char *line) {
     token = strtok(NULL, "\\"); 
     if (token) {
         trim_whitespace(token);
+
+        char* space = strchr(token, ' ');
+        if (space) {
+            int first_word_len = space - token;
+            char* second_word = space + 1;
+            int second_word_len = strlen(second_word);
+            if (first_word_len > 0 && first_word_len == second_word_len && strncmp(token, second_word, first_word_len) == 0) {
+                *space = '\0';
+            }
+        }
+
         strcpy(player.nacionality, token);
     }
 

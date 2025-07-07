@@ -3,8 +3,7 @@
 
 #include "bplus_tree_io.h" 
 
-
 void trim_whitespace(char *str);
 PlayerData parse_player_data(char *line);
 
-#endif 
+#endif

@@ -15,6 +15,7 @@ add_executable(prototipo
         hash_table.c
         hash_table.h
         main.c
+        # main_hash_test.c
         tabela_hash_pais.c
         tabela_hash_pais.h
         title_manager.h

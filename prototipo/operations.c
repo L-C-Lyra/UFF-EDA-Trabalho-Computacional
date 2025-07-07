@@ -26,8 +26,9 @@ void search_player_by_name(HashTable* player_ht, const char* full_name) {
     }
 }
 
-void search_players_by_country(TabelaHashPais* country_ht, const char* country_name) {
+void search_players_by_country(FILE* index_file, TabelaHashPais* country_ht, const char* country_name) {
     printf("\nBuscando jogadores de '%s'...\n", country_name);
+
     NoLocalizacaoJogador* player_node = buscar_tabela_hash_pais(country_ht, country_name);
 
     if (player_node == NULL) {
@@ -37,15 +38,64 @@ void search_players_by_country(TabelaHashPais* country_ht, const char* country_n
 
     int count = 0;
     while(player_node != NULL) {
-        LeafNode* leaf = read_leaf_node(player_node->id_folha);
-        if (leaf) {
-            print_player(&leaf->records[player_node->indice_registro_na_folha]);
+        PlayerData* found_player = bpt_search(index_file, player_node->nome_completo);
+
+        if (found_player != NULL) {
+            print_player(found_player);
+            free(found_player);
             count++;
+        } else {
+            printf("-> ERRO DE CONSISTÊNCIA: Jogador '%s' encontrado na hash de país, mas não na Árvore B+.\n", player_node->nome_completo);
+        }
+
+        player_node = player_node->proximo;
+    }
+    printf("-> Total de %d jogadores encontrados e validados na Arvore B+.\n", count);
+}
+
+void search_active_player_by_name(HashTable* player_ht, const char* full_name) {
+    printf("\nBuscando jogador EM ATIVIDADE por nome: '%s'...\n", full_name);
+    int leaf_id, record_idx;
+
+    if (hash_table_search(player_ht, full_name, &leaf_id, &record_idx)) {
+        LeafNode* leaf = read_leaf_node(leaf_id);
+        if (leaf) {
+            PlayerData* p = &leaf->records[record_idx];
+            if (p->is_retired == 0) {
+                print_player(p);
+            } else {
+                printf("-> Jogador '%s' encontrado, mas esta APOSENTADO.\n", full_name);
+            }
             free(leaf);
+        }
+    } else {
+        printf("-> Jogador '%s' NAO ENCONTRADO.\n", full_name);
+    }
+}
+
+void search_active_players_by_country(FILE* index_file, TabelaHashPais* country_ht, const char* country_name) {
+    printf("\nBuscando jogadores EM ATIVIDADE de '%s'...\n", country_name);
+
+    NoLocalizacaoJogador* player_node = buscar_tabela_hash_pais(country_ht, country_name);
+
+    if (player_node == NULL) {
+        printf("-> Nenhum jogador encontrado para o pais '%s'.\n", country_name);
+        return;
+    }
+
+    int count = 0;
+    while(player_node != NULL) {
+        PlayerData* found_player = bpt_search(index_file, player_node->nome_completo);
+        if (found_player != NULL) {
+            if (found_player->is_retired == 0) {
+                print_player(found_player);
+                count++;
+            }
+            free(found_player);
         }
         player_node = player_node->proximo;
     }
-    printf("-> Total de %d jogadores encontrados.\n", count);
+    printf("-> Total de %d jogadores em atividade encontrados para '%s'.\n", count, country_name);
 }
 
 void delete_player_by_name(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* full_name) {
