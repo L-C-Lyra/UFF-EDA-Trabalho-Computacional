@@ -45,7 +45,7 @@ int main() {
 
     // Passo 2: Parse os dados dos jogadores do arquivo texto.
     printf("\n--- Carregando e Parseando Dados de tennis_players.txt ---\n");
-    FILE *fp_players = fopen("../tennis_players.txt", "r");
+    FILE *fp_players = fopen("tennis_players.txt", "r");
     if (fp_players == NULL) {
         perror("Erro ao abrir tennis_players.txt");
         return 1;
@@ -204,7 +204,7 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
             case 9: { // Gerar Relatorio de Titulos
                 printf("\nGerando Relatorio Principal de Titulos...\n");
                 rewind(fp_index);
-                report_titles_by_status(fp_index, "../champions.txt");
+                report_titles_by_status(fp_index, "champions.txt");
                 break;
             }
             case 10: { // Imprimir Estrutura da Arvore B+
