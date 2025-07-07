@@ -4,29 +4,6 @@
 #include <string.h>
 #include <ctype.h>
 
-#if defined(_WIN32)
-char* strtok_r(char* str, const char* delim, char** saveptr) {
-    char* p;
-    if (str == NULL) {
-        str = *saveptr;
-    }
-    if (*str == '\0') {
-        *saveptr = str;
-        return NULL;
-    }
-    p = str + strspn(str, delim);
-    if (*p == '\0') {
-        *saveptr = p;
-        return NULL;
-    }
-    *saveptr = p + strcspn(p, delim);
-    if (**saveptr != '\0') {
-        **saveptr = '\0';
-        (*saveptr)++;
-    }
-    return p;
-}
-#endif
 
 // Estrutura auxiliar para a tabela hash de jogadores
 typedef struct PlayerNode {

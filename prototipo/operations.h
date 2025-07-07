@@ -21,4 +21,6 @@ void delete_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHas
 void delete_active_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* country_name);
 void delete_retired_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* country_name);
 
+void find_compatriot_slam_birth_year(HashTableYear* year_ht, HashTable* player_ht);
+
 #endif

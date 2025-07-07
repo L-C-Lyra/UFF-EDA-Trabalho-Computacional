@@ -17,13 +17,13 @@ unsigned int hash_function_year(int year) {
     return (unsigned int) year % HASH_TABLE_SIZE;
 }
 
-HashEntryYear *search_hash_table_year(HashTableYear *ht, int year) {
+PlayerLocationNode *search_hash_table_year(HashTableYear *ht, int year) {
     unsigned int index = hash_function_year(year);
     HashEntryYear *year_entry = ht->list_heads[index];
 
     while (year_entry != NULL) {
         if (year_entry->birth_year == year) {
-            return year_entry;
+            return year_entry->player_list_head;
         }
         year_entry = year_entry->next;
     }

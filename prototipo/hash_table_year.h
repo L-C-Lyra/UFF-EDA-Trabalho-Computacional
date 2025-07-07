@@ -26,7 +26,7 @@ typedef struct HashTableYear {
 } HashTableYear;
 
 HashTableYear *create_hash_table_year();
-HashEntryYear *search_hash_table_year(HashTableYear *ht, int year);
+PlayerLocationNode *search_hash_table_year(HashTableYear *ht, int year);
 void insert_hash_table_year(HashTableYear *ht, int birth_year, char *nationality, int leaf_id, int record_index);
 void free_hash_table_year(HashTableYear *ht);
 

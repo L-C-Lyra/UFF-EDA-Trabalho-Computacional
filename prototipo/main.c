@@ -13,12 +13,13 @@
 #include "data_parser.h"
 #include "hash_table.h"
 #include "tabela_hash_pais.h"
+#include "hash_table_year.h"
 #include "title_manager.h"
 #include "operations.h"
 #include "ranking_manager.h"
 #include "underdog_manager.h"
 
-void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht);
+void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht, HashTableYear *year_ht);
 
 void criar_diretorio_se_nao_existir(const char *nome_pasta) {
     #if defined(_WIN32)
@@ -88,7 +89,7 @@ int main() {
     printf("-> Estruturas de dados construidas com %d jogadores.\n", inserted_count);
 
     // Passo 4: Exibe o menu de operações
-    show_menu(fp_index, player_ht, country_ht);
+    show_menu(fp_index, player_ht, country_ht, year_ht);
 
     // Passo 5: Finalização
     printf("\n=======================================================\n");
@@ -102,7 +103,7 @@ int main() {
     return 0;
 }
 
-void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht) {
+void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht, HashTableYear *year_ht) {
     int choice = 0;
     char input_buffer[100];
     char name_buffer[FULL_NAME_SIZE];
@@ -129,8 +130,9 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
         printf(" 15. Gerar Relatorio: Maiores Vencedores por Torneio\n");
         printf(" 16. Imprimir Estrutura da Arvore B+\n");
         printf(" 17. Gerar Relatorio: Jogadores que 'Furaram o Ranking'\n");
+        printf(" 18. Funcao de busca 2'\n");
         printf("\n--------------------------------------------------------\n");
-        printf(" 18. Sair\n");
+        printf(" 0. Sair\n");
         printf("========================================================\n");
         printf("Escolha uma opcao: ");
 
@@ -142,6 +144,10 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
 
         switch (choice) {
             // --- Buscas ---
+            // --- Sair ---
+            case 0:
+                printf("Encerrando...\n");
+                break;
             case 1:
                 printf("\nDigite o nome completo do jogador: ");
                 fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
@@ -252,10 +258,8 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
             case 17:
                 report_underdog_winners("tennis_players.txt", "champions.txt");
                 break;
-
-            // --- Sair ---
             case 18:
-                printf("Encerrando...\n");
+                find_compatriot_slam_birth_year(year_ht, player_ht);
                 break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
