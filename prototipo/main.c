@@ -18,7 +18,7 @@
 #include "operations.h"
 
 // Protótipo do menu
-void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht);
+void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht, HashTableYear *year_ht);
 
 void criar_diretorio_se_nao_existir(const char *nome_pasta) {
     #if defined(_WIN32)
@@ -44,6 +44,7 @@ int main() {
 
     HashTable* player_ht = create_hash_table();
     TabelaHashPais* country_ht = criar_tabela_hash_pais();
+    HashTableYear *year_ht = create_hash_table_year();
 
     // Passo 2: Parse os dados dos jogadores do arquivo texto.
     // (Este é o bloco de código que você pediu para adicionar)
@@ -82,6 +83,7 @@ int main() {
                 sprintf(full_name, "%s %s", p.name, p.lastname);
                 hash_table_insert(player_ht, full_name, loc.leaf_id, loc.record_index);
                 inserir_tabela_hash_pais(country_ht, p.nacionality, full_name, loc.leaf_id, loc.record_index);
+                insert_hash_table_year(year_ht, p.birth_year, p.nacionality, loc.leaf_id, loc.record_index);
                 inserted_count++;
             }
         }
@@ -89,7 +91,7 @@ int main() {
     printf("-> Estruturas de dados construidas com %d jogadores.\n", inserted_count);
 
     // Passo 4: Exibe o menu de operações
-    show_menu(fp_index, player_ht, country_ht);
+    show_menu(fp_index, player_ht, country_ht, year_ht);
 
     // Passo 5: Finalização
     printf("\n=======================================================\n");
@@ -99,13 +101,14 @@ int main() {
     fclose(fp_index);
     free_hash_table(player_ht);
     liberar_tabela_hash_pais(country_ht);
+    free_hash_table_year(year_ht);
     return 0;
 }
 
 
 // A função show_menu(...) permanece exatamente a mesma de antes.
 // O código completo dela está aqui para garantir que não falte nada.
-void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht) {
+void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht, HashTableYear *year_ht) {
     int choice = 0;
     char input_buffer[100];
     char name_buffer[FULL_NAME_SIZE];
@@ -125,6 +128,7 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
         printf(" 8. Gerar Relatorio de Titulos\n");
         printf(" 9. Imprimir Estrutura da Arvore B+\n");
         printf(" 10. Sair\n");
+        printf(" 11. Imprimir jogadores de um certo ano\n");
         printf("============================================\n");
         printf("Escolha uma opcao: ");
 
@@ -230,6 +234,14 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                 break;
             }
             case 10: { printf("Encerrando...\n"); break; }
+            case 11: {
+                int year_to_search;
+                printf("Digite o ano para imprimir jogadores: ");
+                scanf("%d", &year_to_search);
+                // HashEntryYear *entry = search_hash_table_year(year_ht, year_to_search);
+                search_players_by_year(year_ht, year_to_search);
+                break;
+            }
             default: printf("Opcao invalida. Tente novamente.\n"); break;
         }
     } while (choice != 10);

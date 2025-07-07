@@ -48,6 +48,31 @@ void search_players_by_country(TabelaHashPais* country_ht, const char* country_n
     printf("-> Total de %d jogadores encontrados.\n", count);
 }
 
+void search_players_by_year(HashTableYear *year_ht, int year) {
+    printf("\nBuscando jogadores nascidos em '%d'...\n", year);
+    HashEntryYear *year_entry = search_hash_table_year(year_ht, year);
+
+    if (year_entry == NULL) {
+        printf("Nenhum jogador encontrado nascido em %d\n", year);
+        return;
+    }
+    printf("DEBUG\n");
+    PlayerLocationNode *temp_player = year_entry->player_list_head;
+    LeafNode *leaf;
+    int index, count = 0;
+    while (temp_player) {
+        leaf = read_leaf_node(temp_player->leaf_id);
+        index = temp_player->record_index_in_leaf;
+        if (leaf) {
+            print_player(&leaf->records[index]);
+            count++;
+            free(leaf);
+        }
+        temp_player = temp_player->next;
+    }
+    printf("Total de %d jogadores encontrados\n", count);
+}
+
 void delete_player_by_name(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* full_name) {
     int leaf_id, record_idx;
 
