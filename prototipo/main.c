@@ -33,6 +33,11 @@ int main() {
     printf("        INICIALIZANDO TRABALHO COMPUTACIONAL\n");
     printf("=======================================================\n\n");
 
+    // Passo 0: Cria o diretório 'folhas' automaticamente
+    printf("-> Verificando/Criando diretorio para as folhas...\n");
+    criar_diretorio_se_nao_existir("folhas");
+
+    // Passo 1: Cria (ou zera) o arquivo de índice e inicializa as estruturas em memória
     FILE *fp_index = fopen("indices_t.bin", "wb+");
     if (fp_index == NULL) { perror("Erro critico ao criar/abrir 'indices_t.bin'"); return 1; }
     init_BPT(fp_index, BTREE_ORDER);
@@ -40,37 +45,53 @@ int main() {
     HashTable* player_ht = create_hash_table();
     TabelaHashPais* country_ht = criar_tabela_hash_pais();
 
+    // Passo 2: Parse os dados dos jogadores do arquivo texto.
+    // (Este é o bloco de código que você pediu para adicionar)
+    printf("\n--- Carregando e Parseando Dados de tennis_players.txt ---\n");
     FILE *fp_players = fopen("tennis_players.txt", "r");
-    if (fp_players == NULL) { perror("Erro ao abrir 'tennis_players.txt'"); fclose(fp_index); return 1; }
-
+    if (fp_players == NULL) {
+        perror("Erro ao abrir tennis_players.txt");
+        return 1;
+    }
+    PlayerData players[310];
     char line[512];
     int player_count = 0;
     fgets(line, sizeof(line), fp_players); // Ignora cabeçalho
+    while (fgets(line, sizeof(line), fp_players) != NULL && player_count < 310) {
+        // As seguintes condições eram do seu código original
+        if (line[0] == '[' || line[0] == '\n' || strncmp(line, "Ano", 3) == 0) continue;
 
-    while (fgets(line, sizeof(line), fp_players) != NULL) {
-        if (line[0] == '\n' || strlen(line) < 5) continue;
-        line[strcspn(line, "\r\n")] = 0;
+        players[player_count] = parse_player_data(line);
+        player_count++;
+    }
+    fclose(fp_players);
+    printf("Total de %d jogadores parseados.\n", player_count);
 
-        PlayerData p = parse_player_data(line);
-        if (p.birth_year > 0) {
+
+    // Passo 3: Insere cada jogador do array na Árvore B+ e nas Tabelas Hash
+    printf("\n--- Iniciando Insercao nas Estruturas de Dados ---\n");
+    int inserted_count = 0;
+    for (int i = 0; i < player_count; i++) {
+        PlayerData p = players[i];
+
+        // Garante que um nome foi parseado antes de inserir
+        if (strlen(p.name) > 0 || strlen(p.lastname) > 0) {
             PlayerLocation loc = bpt_insert(fp_index, p);
-            if (loc.leaf_id != -1) {
+            if (loc.record_index != -1) {
                 char full_name[FULL_NAME_SIZE];
                 sprintf(full_name, "%s %s", p.name, p.lastname);
                 hash_table_insert(player_ht, full_name, loc.leaf_id, loc.record_index);
                 inserir_tabela_hash_pais(country_ht, p.nacionality, full_name, loc.leaf_id, loc.record_index);
-                player_count++;
-            }
-            else {
-                print_player(&p);
+                inserted_count++;
             }
         }
     }
-    printf("-> Estruturas de dados construidas com %d jogadores.\n", player_count);
-    fclose(fp_players);
+    printf("-> Estruturas de dados construidas com %d jogadores.\n", inserted_count);
 
+    // Passo 4: Exibe o menu de operações
     show_menu(fp_index, player_ht, country_ht);
 
+    // Passo 5: Finalização
     printf("\n=======================================================\n");
     printf("                 EXECUCAO FINALIZADA\n");
     printf("=======================================================\n");
@@ -82,6 +103,8 @@ int main() {
 }
 
 
+// A função show_menu(...) permanece exatamente a mesma de antes.
+// O código completo dela está aqui para garantir que não falte nada.
 void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht) {
     int choice = 0;
     char input_buffer[100];
@@ -96,7 +119,7 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
         printf("--- Operacoes de Busca e Listagem ---\n");
         printf(" 4. Buscar Jogador por Nome (via Hash)\n");
         printf(" 5. Buscar Jogadores por Pais (via Hash)\n");
-        printf(" 6. Buscar Jogador por Nome Completo (via Arvore B+)\n"); // ALTERADO
+        printf(" 6. Buscar Jogador por Nome Completo (via Arvore B+)\n");
         printf(" 7. Listar Jogadores por Status (Ativo/Aposentado)\n");
         printf("--- Relatorios e Verificacao ---\n");
         printf(" 8. Gerar Relatorio de Titulos\n");
@@ -160,7 +183,6 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                 search_players_by_country(country_ht, input_buffer);
                 break;
             }
-            // CORRIGIDO: Case 6 para buscar por nome na Arvore B+
             case 6: {
                 printf("\nDigite o nome completo do jogador para buscar na Arvore B+: ");
                 fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
@@ -201,7 +223,7 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                     print_header(header);
                     printf("\n--- Nos Internos ---\n");
                     print_internal_nodes(fp_index);
-                    printf("\n--- Nos Folha ---\n");
+                    printf("\n--- Nos Folha (do diretorio 'folhas/') ---\n");
                     print_leafs(header);
                     free(header);
                 }
