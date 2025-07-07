@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Includes para a criação de diretório
+#if defined(_WIN32)
+#include <direct.h> // Para _mkdir no Windows
+#else
+#include <sys/stat.h> // Para mkdir no Linux/macOS
+#endif
+
 #include "bplus_tree.h"
 #include "bplus_tree_io.h"
 #include "data_parser.h"
@@ -10,12 +17,26 @@
 #include "title_manager.h"
 #include "operations.h"
 
+// Protótipo do menu
 void show_menu(FILE* fp_index, HashTable* player_ht, TabelaHashPais* country_ht);
+
+void criar_diretorio_se_nao_existir(const char *nome_pasta) {
+    #if defined(_WIN32)
+        _mkdir(nome_pasta);
+    #else
+        mkdir(nome_pasta, 0777); // 0777 são as permissões no Linux/macOS
+    #endif
+}
 
 int main() {
     printf("=======================================================\n");
     printf("        INICIALIZANDO TRABALHO COMPUTACIONAL\n");
     printf("=======================================================\n\n");
+
+    // --- CRIA O DIRETÓRIO 'folhas' AUTOMATICAMENTE ---
+    printf("-> Verificando/Criando diretorio para as folhas...\n");
+    criar_diretorio_se_nao_existir("folhas");
+    // ----------------------------------------------------
 
     FILE *fp_index = fopen("indices_t.bin", "wb+");
     if (fp_index == NULL) { perror("Erro critico ao criar/abrir 'indices_t.bin'"); return 1; }
@@ -29,15 +50,18 @@ int main() {
 
     char line[512];
     int player_count = 0;
-    fgets(line, sizeof(line), fp_players);
+    fgets(line, sizeof(line), fp_players); // Ignora cabeçalho
 
     while (fgets(line, sizeof(line), fp_players) != NULL) {
-        if (strlen(line) < 10) continue;
+        if (line[0] == '\n' || strlen(line) < 5) continue;
+        line[strcspn(line, "\r\n")] = 0;
+
         PlayerData p = parse_player_data(line);
-        if (p.birth_year > 0) {
+
+        if (strlen(p.name) > 0 || strlen(p.lastname) > 0) {
             PlayerLocation loc = bpt_insert(fp_index, p);
             if (loc.leaf_id != -1) {
-                char full_name[NAME_SIZE * 2];
+                char full_name[FULL_NAME_SIZE];
                 sprintf(full_name, "%s %s", p.name, p.lastname);
                 hash_table_insert(player_ht, full_name, loc.leaf_id, loc.record_index);
                 inserir_tabela_hash_pais(country_ht, p.nacionality, full_name, loc.leaf_id, loc.record_index);
@@ -60,10 +84,11 @@ int main() {
     return 0;
 }
 
+
 void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht) {
     int choice = 0;
     char input_buffer[100];
-    char name_buffer[NAME_SIZE * 2];
+    char name_buffer[FULL_NAME_SIZE];
 
     do {
         printf("\n\n=============== MENU DE OPCOES ===============\n");
@@ -72,9 +97,9 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
         printf(" 2. Remover Jogador por Nome\n");
         printf(" 3. Remover TODOS os Jogadores de um Pais\n");
         printf("--- Operacoes de Busca e Listagem ---\n");
-        printf(" 4. Buscar Jogador por Nome\n");
-        printf(" 5. Buscar Jogadores por Pais\n");
-        printf(" 6. Buscar Jogador por Ano de Nascimento\n");
+        printf(" 4. Buscar Jogador por Nome (via Hash)\n");
+        printf(" 5. Buscar Jogadores por Pais (via Hash)\n");
+        printf(" 6. Buscar Jogador por Nome Completo (via Arvore B+)\n"); // ALTERADO
         printf(" 7. Listar Jogadores por Status (Ativo/Aposentado)\n");
         printf("--- Relatorios e Verificacao ---\n");
         printf(" 8. Gerar Relatorio de Titulos\n");
@@ -100,7 +125,10 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                 int current_year = 2025;
                 p.is_retired = (p.birth_year > 0 && (current_year - p.birth_year) >= 39) ? 1 : 0;
 
-                if (strlen(p.lastname) > 0 && p.birth_year > 1900) {
+                char full_name_check[FULL_NAME_SIZE];
+                sprintf(full_name_check, "%s %s", p.name, p.lastname);
+
+                if (strlen(full_name_check) > 1 && p.birth_year > 1900) {
                     PlayerLocation loc = bpt_insert(fp_index, p);
                     if (loc.leaf_id != -1) {
                         sprintf(name_buffer, "%s %s", p.name, p.lastname);
@@ -135,23 +163,22 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht)
                 search_players_by_country(country_ht, input_buffer);
                 break;
             }
+            // CORRIGIDO: Case 6 para buscar por nome na Arvore B+
             case 6: {
-                int ano_busca = 0;
-                printf("\nDigite o ano de nascimento para buscar: ");
-                if (fgets(input_buffer, sizeof(input_buffer), stdin)) {
-                    ano_busca = atoi(input_buffer);
-                }
-                if (ano_busca > 0) {
+                printf("\nDigite o nome completo do jogador para buscar na Arvore B+: ");
+                fgets(name_buffer, sizeof(name_buffer), stdin); name_buffer[strcspn(name_buffer, "\n")] = 0;
+
+                if (strlen(name_buffer) > 0) {
                     rewind(fp_index);
-                    PlayerData* jogador_encontrado = bpt_search(fp_index, ano_busca);
+                    PlayerData* jogador_encontrado = bpt_search(fp_index, name_buffer);
                     if (jogador_encontrado != NULL) {
-                        printf("-> Jogador encontrado: ");
+                        printf("-> Jogador encontrado diretamente na Arvore B+: ");
                         print_player(jogador_encontrado);
                         free(jogador_encontrado);
                     } else {
-                        printf("-> Nenhum jogador encontrado para o ano %d.\n", ano_busca);
+                        printf("-> Nenhum jogador encontrado com o nome '%s' na Arvore B+.\n", name_buffer);
                     }
-                } else { printf("Ano invalido.\n"); }
+                } else { printf("Nome invalido.\n"); }
                 break;
             }
             case 7: {

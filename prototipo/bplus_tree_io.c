@@ -1,4 +1,5 @@
 #include "bplus_tree_io.h"
+#include <string.h> // Adicionado para consistência, se necessário
 
 void write_header(FILE *index_file, BPTHeader *header) {
     fseek(index_file, 0, SEEK_SET);
@@ -42,10 +43,11 @@ InternalNode *read_internal_node(FILE *index_file, int node_offset) {
 
 void write_leaf_node(int leaf_id, LeafNode *node) {
     char filename[FILENAME_SIZE];
-    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    // ALTERADO: Caminho do arquivo para o diretório "folhas"
+    sprintf(filename, "folhas/folha_%03d.bin", (-leaf_id));
     FILE *leaf_file = fopen(filename, "wb");
     if (leaf_file == NULL) {
-        perror("Falha ao abrir arquivo folha");
+        perror("Falha ao abrir arquivo folha no diretorio 'folhas/'");
         return;
     }
     fwrite(node, sizeof(LeafNode), 1, leaf_file);
@@ -60,12 +62,13 @@ LeafNode *read_leaf_node(int leaf_id) {
     }
 
     char filename[FILENAME_SIZE];
-    sprintf(filename, "folha_%03d.bin", (-leaf_id));
+    // ALTERADO: Caminho do arquivo para o diretório "folhas"
+    sprintf(filename, "folhas/folha_%03d.bin", (-leaf_id));
     FILE *leaf_file = fopen(filename, "rb");
 
     if (leaf_file == NULL) {
         free(node);
-        perror("Falha ao abrir arquivo folha para leitura");
+        perror("Falha ao abrir arquivo folha");
         return NULL;
     }
 
@@ -82,6 +85,7 @@ LeafNode *read_leaf_node(int leaf_id) {
 int init_BPT(FILE *index_file, const int order) {
     BPTHeader init_header = {order, -1, 0, 0, sizeof(BPTHeader), -1};
     write_header(index_file, &init_header);
+    return 0; // Adicionado retorno para consistência
 }
 
 
@@ -105,6 +109,7 @@ InternalNode *read_internal_node_from_id(FILE *index_file, int node_id) {
     if(fread(node, sizeof(InternalNode), 1, index_file)) {
         return node;
     }
+    free(node); // Liberar se a leitura falhar
     return NULL;
 }
 
@@ -116,7 +121,7 @@ void add_leaf_node(FILE *index_file, LeafNode *leafnode) {
     }
 
     char filename[FILENAME_SIZE];
-    sprintf(filename, "folha_%03d.bin", header->next_leaf_id);
+    sprintf(filename, "folhas/folha_%03d.bin", header->next_leaf_id);
     FILE *leaf_file = fopen(filename, "wb");
     if (!leaf_file) {
         printf("Erro ao abrir arquivo folha\n");
@@ -154,7 +159,6 @@ void add_internal_node(FILE *index_file, InternalNode *node) {
 
 
 void print_header(BPTHeader *header) {
-
     printf("<Header>\n");
     printf("Order: %d\n", header->order);
     printf("Root node offset: %d\n", header->root_offset);
@@ -172,7 +176,8 @@ void print_node_aux(InternalNode *node) {
     printf("Keys: ");
     int i;
     for (i = 0; i < node->num_keys; i++) {
-        printf("%d ", node->keys[i]);
+        // Como a chave agora é string, imprimimos como string
+        printf("\"%s\" ", node->keys[i]);
     }
     printf("\n");
     printf("Children pointers: ");
@@ -190,32 +195,29 @@ void print_internal_nodes(FILE *index_file) {
     }
 
     if (header->internal_node_count == 0) {
-        printf("Arquivo de indices vazio\n");
+        printf("Nenhum no interno na arvore.\n");
         free(header);
         return;
     }
 
-    fseek(index_file, header->root_offset, SEEK_SET);
-    int start = ftell(index_file);
-    InternalNode *temp_node;
-
+    fseek(index_file, sizeof(BPTHeader), SEEK_SET);
     for (int j = 0; j < header->internal_node_count; j++) {
-        temp_node = read_internal_node(index_file, (start + j * sizeof(InternalNode)));
-        if (temp_node != NULL) {
-            print_node_aux(temp_node);
-            free(temp_node);
+        InternalNode temp_node;
+        if(fread(&temp_node, sizeof(InternalNode), 1, index_file) == 1){
+            printf("--- Lendo No Interno Offset: %ld ---\n", (sizeof(BPTHeader) + j * sizeof(InternalNode)));
+            print_node_aux(&temp_node);
         }
     }
-
     free(header);
 }
 
 void print_player(PlayerData *record) {
-    printf("Player -> Nome: %s %s, Ano Nasc: %d, Rank: %d\n",
-        record->name, 
+    printf("Player -> Nome: %s %s, Ano Nasc: %d, Rank: %d, Nacionalidade: %s\n",
+        record->name,
         record->lastname,
-        record->birth_year, 
-        record->best_rank);
+        record->birth_year,
+        record->best_rank,
+        record->nacionality);
 }
 
 void print_players_by_status(FILE *index_file, int is_retired_status) {
@@ -226,14 +228,15 @@ void print_players_by_status(FILE *index_file, int is_retired_status) {
         return;
     }
 
-    int current_leaf_id = -1;
+    int current_leaf_id = -1; // Começa da primeira folha
 
     printf("\n--- Listando Jogadores com Status: %s ---\n", is_retired_status == 1 ? "Aposentado" : "Ativo");
 
-    while (current_leaf_id != 0) {
+    int count = 0;
+    while (current_leaf_id != 0 && count < header->leaf_count) {
         LeafNode *leaf = read_leaf_node(current_leaf_id);
         if (!leaf) {
-            printf("Erro ao ler a folha com ID: %d\n", current_leaf_id);
+            // Não precisa mais imprimir aviso, read_leaf_node já é silencioso
             break;
         }
 
@@ -245,6 +248,7 @@ void print_players_by_status(FILE *index_file, int is_retired_status) {
 
         current_leaf_id = leaf->next_leaf_id;
         free(leaf);
+        count++;
     }
 
     free(header);
@@ -254,19 +258,20 @@ void print_leaf_aux(LeafNode *node) {
     if (!node) return;
     printf("------------------------------------------\n");
     printf("Numero de Registros: %d\n", node->num_records);
+    printf("ID da Folha Anterior: %d\n", node->prev_lead_id);
     printf("ID da Proxima Folha: %d\n", node->next_leaf_id);
     printf("\nRegistros:\n");
 
     if (node->num_records == 0) {
         printf("  (Folha vazia)\n");
-    } 
+    }
     else {
         for (int i = 0; i < node->num_records; i++) {
-            printf("  [%d] -> Nome: %s %s, Ano Nasc: %d, Rank: %d\n", 
-                   i, 
-                   node->records[i].name, 
+            printf("  [%d] -> Nome: %s %s, Ano Nasc: %d, Rank: %d\n",
+                   i,
+                   node->records[i].name,
                    node->records[i].lastname,
-                   node->records[i].birth_year, 
+                   node->records[i].birth_year,
                    node->records[i].best_rank);
         }
     }
@@ -275,17 +280,24 @@ void print_leaf_aux(LeafNode *node) {
 
 void print_leafs(BPTHeader *header) {
     if (header == NULL || header->leaf_count == 0) {
-        printf("Arvore vazia.\n");
+        printf("Arvore vazia ou sem folhas.\n");
         return;
     }
 
-    LeafNode *node = NULL;
-    for (int i = 1; i <= header->leaf_count; i++) {
-        node = read_leaf_node(-i);
-        if (node != NULL) {
+    // A lógica de impressão deve começar pela primeira folha na lista ligada.
+    int current_leaf_id = -1; // Assumindo que a primeira folha é -1
+    int count = 0;
+    while(current_leaf_id != 0 && count < header->leaf_count){
+        LeafNode* node = read_leaf_node(current_leaf_id);
+        if(node){
+            printf("--- Lendo Folha ID: %d ---\n", current_leaf_id);
             print_leaf_aux(node);
+            current_leaf_id = node->next_leaf_id;
             free(node);
+            count++;
+        } else {
+            printf("AVISO: Nao foi possivel ler a folha com ID %d. Interrompendo listagem.\n", current_leaf_id);
+            break;
         }
     }
 }
-

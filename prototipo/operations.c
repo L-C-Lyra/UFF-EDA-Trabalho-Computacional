@@ -10,7 +10,15 @@ void search_player_by_name(HashTable* player_ht, const char* full_name) {
     if (hash_table_search(player_ht, full_name, &leaf_id, &record_idx)) {
         LeafNode* leaf = read_leaf_node(leaf_id);
         if (leaf) {
-            print_player(&leaf->records[record_idx]);
+            PlayerData* p = &leaf->records[record_idx];
+            // Confirma o nome completo antes de imprimir
+            char current_full_name[FULL_NAME_SIZE];
+            sprintf(current_full_name, "%s %s", p->name, p->lastname);
+            if(strcmp(full_name, current_full_name) == 0){
+                print_player(p);
+            } else {
+                 printf("-> Erro de consistencia na Hash. Nome encontrado: '%s'\n", current_full_name);
+            }
             free(leaf);
         }
     } else {
@@ -57,8 +65,9 @@ void delete_player_by_name(FILE* index_file, HashTable* player_ht, TabelaHashPai
     PlayerData player_to_delete = leaf->records[record_idx];
     free(leaf);
 
-    printf("  - Removendo '%s' (Ano: %d) da Arvore B+...\n", full_name, player_to_delete.birth_year);
-    bpt_delete(index_file, player_to_delete.birth_year, full_name);
+    // CORRIGIDO: chamada da bpt_delete
+    printf("  - Removendo '%s' da Arvore B+...\n", full_name);
+    bpt_delete(index_file, full_name);
 
     printf("  - Removendo '%s' da tabela hash de nomes...\n", full_name);
     hash_table_delete(player_ht, full_name);
@@ -66,7 +75,7 @@ void delete_player_by_name(FILE* index_file, HashTable* player_ht, TabelaHashPai
     printf("  - Removendo '%s' da tabela hash de paises (%s)...\n", full_name, player_to_delete.nacionality);
     deletar_tabela_hash_pais(country_ht, player_to_delete.nacionality, full_name);
 
-    printf("  - '%s' removido de todas as estruturas.\n", full_name);
+    printf("-> '%s' removido de todas as estruturas.\n", full_name);
 }
 
 void delete_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHashPais* country_ht, const char* country_name) {
@@ -78,7 +87,7 @@ void delete_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHas
         return;
     }
 
-    char names_to_delete[300][NAME_SIZE * 2];
+    char names_to_delete[300][FULL_NAME_SIZE];
     int count = 0;
     NoLocalizacaoJogador* current = player_list;
     while(current != NULL && count < 300) {
@@ -91,5 +100,4 @@ void delete_players_by_country(FILE* index_file, HashTable* player_ht, TabelaHas
     }
 
     printf("-> Operacao concluida. %d jogador(es) de '%s' foram removidos.\n", count, country_name);
-    printf("-> AVISO: As tabelas hash devem ser recarregadas para consistencia total.\n");
 }
