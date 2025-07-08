@@ -8,6 +8,7 @@
 #include <sys/stat.h> // Para mkdir no Linux/macOS
 #endif
 
+#include "reports.h" 
 #include "bplus_tree.h"
 #include "bplus_tree_io.h"
 #include "data_parser.h"
@@ -130,8 +131,10 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht,
         printf(" 15. Gerar Relatorio: Maiores Vencedores por Torneio\n");
         printf(" 16. Imprimir Estrutura da Arvore B+\n");
         printf(" 17. Gerar Relatorio: Jogadores que 'Furaram o Ranking'\n");
-        printf(" 18. Funcao de busca 2'\n");
+        printf(" 18. Funcao de busca compatriota\n");
+        printf(" 19. Gerar Relatorio: Vencedores do Grand Slam no mesmo ano\n"); 
         printf("\n--------------------------------------------------------\n");
+
         printf(" 0. Sair\n");
         printf("========================================================\n");
         printf("Escolha uma opcao: ");
@@ -260,6 +263,9 @@ void show_menu(FILE *fp_index, HashTable* player_ht, TabelaHashPais* country_ht,
                 break;
             case 18:
                 find_compatriot_slam_birth_year(year_ht, player_ht);
+                break;
+            case 19:
+                report_calendar_grand_slam(); 
                 break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
