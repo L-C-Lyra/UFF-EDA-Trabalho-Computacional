@@ -282,11 +282,14 @@ static PlayerLocation insert_into_parent(FILE *index_file, int parent_offset, co
     char temp_keys[KEY_SIZE + 1][FULL_NAME_SIZE];
     int temp_pointers[KEY_SIZE + 2];
     int pos = 0;
-    while (pos < KEY_SIZE && strcmp(key, parent->keys[pos]) > 0) pos++;
+    while (pos < parent->num_keys && strcmp(key, parent->keys[pos]) > 0) pos++;
+    
     memcpy(temp_keys, parent->keys, pos * sizeof(parent->keys[0]));
     memcpy(temp_pointers, parent->children_pointers, (pos + 1) * sizeof(int));
+    
     strcpy(temp_keys[pos], key);
     temp_pointers[pos + 1] = right_child_pointer;
+    
     memcpy(&temp_keys[pos + 1], &parent->keys[pos], (KEY_SIZE - pos) * sizeof(parent->keys[0]));
     memcpy(&temp_pointers[pos + 2], &parent->children_pointers[pos + 1], (parent->num_keys - pos) * sizeof(int));
 
@@ -308,7 +311,9 @@ static PlayerLocation insert_into_parent(FILE *index_file, int parent_offset, co
 
     write_internal_node(index_file, parent_offset, parent);
     write_internal_node(index_file, new_node_offset, new_internal);
-    int grand_parent_offset = find_parent_offset(index_file, read_header(index_file)->root_offset, parent_offset);
+    
+    int grand_parent_offset = find_parent_offset(index_file, header->root_offset, parent_offset);
+    
     write_header(index_file, header);
 
     insert_into_parent(index_file, grand_parent_offset, promoted_key, parent_offset, new_node_offset);
@@ -317,7 +322,6 @@ static PlayerLocation insert_into_parent(FILE *index_file, int parent_offset, co
     free(new_internal);
     return loc;
 }
-
 
 // --- Funções de Deleção e Balanceamento ---
 
