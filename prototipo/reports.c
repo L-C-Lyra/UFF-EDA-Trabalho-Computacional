@@ -1,4 +1,3 @@
-// Arquivo: reports.c
 
 #include <stdio.h>
 #include <string.h>
@@ -6,9 +5,7 @@
 #include <ctype.h>
 #include "bplus_tree_io.h" 
 
-// --- Função Auxiliar ---
-// Esta função isola o nome do jogador de strings como "Lendl (1/1)".
-// Ela também remove espaços em branco antes e depois do nome.
+
 static void parse_winner_name(const char* raw_token, char* clean_name_out, int buffer_size) {
     if (raw_token == NULL || strcmp(raw_token, "-") == 0) {
         strcpy(clean_name_out, "-");
@@ -24,11 +21,11 @@ static void parse_winner_name(const char* raw_token, char* clean_name_out, int b
         len = strlen(raw_token);
     }
     
-    // Copia o nome para o buffer de saída
+    
     strncpy(clean_name_out, raw_token, len);
     clean_name_out[len] = '\0';
 
-    // Remove espaços em branco do final
+   
     int end_idx = strlen(clean_name_out) - 1;
     while(end_idx >= 0 && isspace((unsigned char)clean_name_out[end_idx])) {
         clean_name_out[end_idx] = '\0';
@@ -37,7 +34,7 @@ static void parse_winner_name(const char* raw_token, char* clean_name_out, int b
 }
 
 
-// --- Função Principal do Relatório ---
+
 void report_calendar_grand_slam() {
     printf("\n");
     printf(" RELATÓRIO: Vencedores de todos os Grand Slams no mesmo ano:\n");
@@ -55,7 +52,7 @@ void report_calendar_grand_slam() {
    
     fgets(line, sizeof(line), fp_champions);
 
-    // Lê o arquivo de campeões linha por linha
+    
     while (fgets(line, sizeof(line), fp_champions) != NULL) {
         char* line_ptr = line;
         char* token;
@@ -64,7 +61,7 @@ void report_calendar_grand_slam() {
         int year = 0;
         char gs_winners[4][NAME_SIZE]; // Array para guardar os 4 vencedores de GS do ano
 
-        // Processa cada "coluna" da linha, separada por '\'
+        
         while ((token = strtok_r(line_ptr, "\\\n", &line_ptr))) {
             if (column == 0) { // Coluna do ano
                 year = atoi(token);
