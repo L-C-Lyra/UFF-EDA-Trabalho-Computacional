@@ -4,90 +4,93 @@ LinkedList* linkedListInitialize(void){
   return NULL;
 }
 
-LinkedList* linkedListInsert(LinkedList *l, int elem){
+LinkedList* linkedListInsert(LinkedList *l, void *elem){
   LinkedList *new = (LinkedList *) malloc(sizeof(LinkedList));
   new->next = l;
   new->info = elem;
   return new;
 }
 
-void linkedListInsertVoid(LinkedList **l, int elem){
+void linkedListInsertVoid(LinkedList **l, void *elem){
   LinkedList *new = (LinkedList *) malloc(sizeof(LinkedList));
   new->next = *l;
   new->info = elem;
   (*l) = new;
 }
 
-void linkedListPrint(LinkedList *l){
+void linkedListPrint(LinkedList *l, PrintFunc print){
   LinkedList *p = l;
   while(p){
-    printf("%d ", p->info);
+    print(p->info);
     p = p->next;
   } 
 }
 
-void linkedListPrintRecursive(LinkedList *l){
+void linkedListPrintRecursive(LinkedList *l, PrintFunc print){
   if(l){
-    printf("%d ", l->info);
-    linkedListPrintRecursive(l->next);
+    print(l->info);
+    linkedListPrintRecursive(l->next, print);
   }
 }
 
-void linkedListPrintRecursiveReverse(LinkedList *l){
+void linkedListPrintRecursiveReverse(LinkedList *l, PrintFunc print){
   if(l){
-    linkedListPrintRecursiveReverse(l->next);
-    printf("%d ", l->info);
+    linkedListPrintRecursiveReverse(l->next, print);
+    print(l->info);
   }
 }
 
-void linkedListFree(LinkedList *l){
+void linkedListFree(LinkedList *l, FreeFunc freeData){
   LinkedList *p = l, *q;
   while(p){
     q = p;
     p = p->next;
+    if(freeData) freeData(q->info);
     free(q);
   } 
 }
 
-void linkedListFreeRecursive(LinkedList *l){
+void linkedListFreeRecursive(LinkedList *l, FreeFunc freeData){
   if(l){
-    linkedListFreeRecursive(l->next);
-    printf("freeing element %d...\n", l->info);
+    linkedListFreeRecursive(l->next, freeData);
+    if(freeData) freeData(l->info);
     free(l);
   }
 }
 
-LinkedList* linkedListRemove(LinkedList *l, int elem){
+LinkedList* linkedListRemove(LinkedList *l, void *elem, CompareFunc compare, FreeFunc freeData){
   LinkedList *p = l, *ant = NULL;
-  while((p) && (p->info != elem)){
+  while((p) && (compare(p->info, elem) != 0)){
     ant = p;
     p = p->next;
   }
   if(!p) return l;
   if(!ant) l = l->next;
   else ant->next = p->next;
+  if(freeData) freeData(p->info);
   free(p);
   return l;
 }
 
-LinkedList* linkedListRemoveRecursive(LinkedList *l, int elem){
+LinkedList* linkedListRemoveRecursive(LinkedList *l, void *elem, CompareFunc compare, FreeFunc freeData){
   if(!l) return l;
-  if(l->info == elem){
+  if(compare(l->info, elem) == 0){
     LinkedList *p = l;
     l = l->next;
+    if(freeData) freeData(p->info);
     free(p);
   }
-  else l->next = linkedListRemoveRecursive(l->next, elem);
+  else l->next = linkedListRemoveRecursive(l->next, elem, compare, freeData);
   return l;
 }
 
-LinkedList* linkedListSearch(LinkedList *l, int elem){
+LinkedList* linkedListSearch(LinkedList *l, void *elem, CompareFunc compare){
   LinkedList *p = l;
-  while((p) && (p->info != elem)) p = p->next; 
+  while((p) && (compare(p->info, elem) != 0)) p = p->next; 
   return p;
 }
 
-LinkedList* linkedListSearchRecursive(LinkedList *l, int elem){
-  if((!l) || (l->info == elem)) return l;
-  return linkedListSearchRecursive(l->next, elem);
+LinkedList* linkedListSearchRecursive(LinkedList *l, void *elem, CompareFunc compare){
+  if((!l) || (compare(l->info, elem) == 0)) return l;
+  return linkedListSearchRecursive(l->next, elem, compare);
 }
