@@ -1,0 +1,55 @@
+1. CamelCase, arquivos capitalizados, typedefs capitalizados, variaveis e funções não 
+capitalizados:
+eg: StructLegal, mexeEmAlgoNaStrucLegal()
+
+2. separação coesa, manter o codigo organizado, por exemplo estruturas para dados podem ser 
+postos na pasta src/models (models de datamodels)
+
+3. nomenclatura de variavel deve ser explicativa, so encurte a variavel se ela ficar com um nome
+muito verboso, isso vai deixar o codigo mais verboso mas vai ser mais facil de entender o fluxo 
+do codigo que a outra pessoa criou!
+
+4. nomenclatura de funções quando necessario devem conter explicitamente em que tipo elas operam
+exemplo: linkedListInitialize() ao invez de initialize(), isso ira evitar conflitos com nomes e ajudar
+na clareza do codigo
+
+5. sempre que possivel criar testes para verificar se o codigo esta gerando o resultado esperado (veja Tester.h)
+
+6. sempre que criar uma nova struct tambem definir as funções compare print e free para uso em linkedListFree
+
+7. certificar gerenciamento de memoria correto para nao gerar memory leak, sempre que alocar algo garanta
+que esse algo sera liberado em algum momento alcançavel do codigo
+
+
+INCLUDE GUARDS!!!!! ISSO È MUITO IMPORTANTE!!!! E ACHO QUE NAO TIVEMOS EM ED!!!
+include guards servem pra evitar multiplas inclusões (o que gera erro de compilação), isso é
+excencial de ser adicionado para evitar dor de cabeça futura,
+
+por exemplo: se voce tem algum arquivo ArquivoLegal.h/c, se voce tem um outro arquivo
+ArquivoMaisLegal.h/c e digamos uma Main.c 
+
+O ArquivoMaisLegal.h importa o ArquivoLegal.h
+
+se na main.c voce incluir ArquivoMaisLegal.h e o ArquivoLegal.h ao mesmo tempo isso ira gerar
+um erro de compilação! as import guards iram evitar que isso acontece usando o 
+
+#ifndef <nome>
+#define <nome>
+ <codigo>
+#endif
+
+isso quer dizer que o codigo so ira ser executado/importado se, e apenas se, o <nome> 
+nao estiver definido
+caso ele ja esteja definido (se for importado duas vezes) o arquivo nao sera importado
+
+o nome custuma ser o proprio nome do arquivo capitalizado em snake case
+exemplo
+#ifndef ARQUIVO_LEGAL_H
+#define ARQUIVO_LEGAL_H
+
+#endif
+
+se ainda estiver com duvida veja esse artigo da wikipedia: https://en.wikipedia.org/wiki/Include_guard
+
+>> por favor sigam isso! 
+> allan mingau :3
