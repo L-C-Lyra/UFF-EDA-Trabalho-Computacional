@@ -17,7 +17,7 @@ void printSchoolInfo(void *data) {
 	linkedListPrint(s->runnerUpList, printChampionshipInfo);
 	printf("  -Estandarte Awards:\n");
 	linkedListPrint(s->estandarteAwardList, printEstandarteAward);
-    printf("}");
+    printf("}\n");
 }
 
 void freeSchoolInfo(void *data) {
