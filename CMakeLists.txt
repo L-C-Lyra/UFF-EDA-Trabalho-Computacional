@@ -14,20 +14,30 @@ set(LIB_SOURCES
         libs/BinarySearchTree.c
         libs/LinkedList.c
         libs/BPlusTree.c
+        libs/HashUtils.c
 )
 set(LIB_HEADERS
         libs/BinaryTree.h
         libs/BinarySearchTree.h
         libs/LinkedList.h
+        libs/LinkedListTypes.h
         libs/BPlusTree.h
+        libs/HashUtils.h
 )
 
 #inclua src aqui
 set(SRC_SOURCES
-        src/main.c
+        src/Main.c
+        src/models/ChampionshipInfo.c
+        src/models/EstandarteAward.c
+        src/models/SchoolInfo.c
+        src/models/IndividualInfo.c
 )
 set(SRC_HEADERS
-
+        src/models/ChampionshipInfo.h
+        src/models/EstandarteAward.h
+        src/models/SchoolInfo.h
+        src/models/IndividualInfo.h
 )
 
 if(BUILD_TESTS)

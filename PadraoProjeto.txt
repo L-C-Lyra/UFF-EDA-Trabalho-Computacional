@@ -20,6 +20,7 @@ na clareza do codigo
 7. certificar gerenciamento de memoria correto para nao gerar memory leak, sempre que alocar algo garanta
 que esse algo sera liberado em algum momento alcançavel do codigo
 
+8. todo novo arquivo deve ser incluido no cmakelist
 
 INCLUDE GUARDS!!!!! ISSO È MUITO IMPORTANTE!!!! E ACHO QUE NAO TIVEMOS EM ED!!!
 include guards servem pra evitar multiplas inclusões (o que gera erro de compilação), isso é
