@@ -46,13 +46,15 @@ if(BUILD_TESTS)
     add_executable(testBinarySearchTree test/TestBinarySearchTree.c ${LIB_SOURCES})
     add_executable(testLinkedList test/TestLinkedList.c ${LIB_SOURCES}) 
     add_executable(testBPlusTree test/TestBPlusTree.c ${LIB_SOURCES})
+    add_executable(testHashUtils test/TestHashUtils.c ${LIB_SOURCES})
     add_test(NAME BinaryTreeTest COMMAND TestBinaryTree)
     add_test(NAME BinarySearchTreeTest COMMAND TestBinarySearchTree)
     add_test(NAME LinkedListTest COMMAND TestLinkedList)
     add_test(NAME BPlusTreeTest COMMAND TestBPlusTree)
+    add_test(NAME HashUtilsTest COMMAND TestHashUtils)
     add_custom_target(runAllTests
             COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-            DEPENDS TestBinaryTree TestBinarySearchTree TestLinkedList testBPlusTree
+            DEPENDS TestBinaryTree TestBinarySearchTree TestLinkedList testBPlusTree testHashUtils
     )
     
 else()
