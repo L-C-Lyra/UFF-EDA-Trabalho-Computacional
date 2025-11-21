@@ -1,19 +1,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include "../libs/BinaryTree.h"
+#include "Tester.h"
 
-int testsPassed = 0;
-int testsTotal = 0;
-
-void runTest(const char* testName, int condition) {
-    testsTotal++;
-    if (condition) {
-        printf("PASSED: %s\n", testName);
-        testsPassed++;
-    } else {
-        printf("ERROR: %s\n", testName);
-    }
-}
+//AVISO: os testes não foram gerados com IA mas IA foi usado para formatar os textos de uma forma mais coesa!
 
 void testBinaryTreeInitialize() {
     BinaryTree* tree = binaryTreeInitialize();
@@ -74,7 +64,7 @@ void testBinaryTreePrint() {
     BinaryTree* right = binaryTreeCreate(3, NULL, NULL);
     BinaryTree* root = binaryTreeCreate(1, left, right);
     
-    printf("\nTesting print functions (visual verification required):\n");
+    printf("\nTesting print functions (check visually for errors!):\n");
     printf("Pre-order: ");
     binaryTreePrintPreOrder(root);
     printf("\n");
@@ -98,21 +88,11 @@ void testBinaryTreePrint() {
 int main() {
     printf("Running BinaryTree Tests...\n");
     printf("================================\n");
-    
     testBinaryTreeInitialize();
     testBinaryTreeCreate();
     testBinaryTreeSearch();
     testBinaryTreeHeight();
     testBinaryTreePrint();
-    
-    printf("\n================================\n");
-    printf("Tests Summary: %d/%d PASSED\n", testsPassed, testsTotal);
-    
-    if (testsPassed == testsTotal) {
-        printf("All tests PASSED!\n");
-        return 0;
-    } else {
-        printf("Some tests FAILED!\n");
-        return 1;
-    }
+    printResults();
+    return (testsPassed == testsTotal) ? 0 : 1;
 }

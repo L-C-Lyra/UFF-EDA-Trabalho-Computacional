@@ -1,150 +1,209 @@
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 #include "../libs/LinkedList.h"
+#include "../libs/GenericImplementations.h"
+#include "Tester.h"
 
-int testsPassed = 0;
-int testsTotal = 0;
-
-void runTest(const char* testName, int condition) {
-    testsTotal++;
-    if (condition) {
-        printf("PASSED: %s\n", testName);
-        testsPassed++;
-    } else {
-        printf("ERROR: %s\n", testName);
-    }
-}
+//AVISO: os testes não foram gerados com IA mas IA foi usado para formatar os textos de uma forma mais coesa!(sou pessimo escrevendo)
+//AVISO2: os testes da linked list apenas usam o tipo int, se necessario adione para outros tipos!
 
 void testLinkedListInitialize() {
     LinkedList* list = linkedListInitialize();
     runTest("linkedListInitialize", list == NULL);
 }
 
-void testLinkedListInsert() {
+void testLinkedListInsertInt() {
     LinkedList* list = linkedListInitialize();
     
-    list = linkedListInsert(list, 10);
-    runTest("linkedListInsert - first element", list != NULL && list->info == 10);
+    int *a = malloc(sizeof(int)); *a = 10;
+    int *b = malloc(sizeof(int)); *b = 20;
+    int *c = malloc(sizeof(int)); *c = 30;
     
-    list = linkedListInsert(list, 20);
-    runTest("linkedListInsert - second element", list->info == 20 && list->next->info == 10);
+    list = linkedListInsert(list, a);
+    runTest("linkedListInsert - first int element", list != NULL && *(int*)list->info == 10);
     
-    list = linkedListInsert(list, 30);
-    runTest("linkedListInsert - third element", list->info == 30);
+    list = linkedListInsert(list, b);
+    runTest("linkedListInsert - second int element", *(int*)list->info == 20 && *(int*)list->next->info == 10);
     
-    linkedListFree(list);
+    list = linkedListInsert(list, c);
+    runTest("linkedListInsert - third int element", *(int*)list->info == 30);
+    
+    linkedListFree(list, freeInt);
+}
+
+void testLinkedListInsertString() {
+    LinkedList* list = linkedListInitialize();
+    
+    char *s1 = strdup("hello");
+    char *s2 = strdup("world");
+    
+    list = linkedListInsert(list, s1);
+    runTest("linkedListInsert - first string element", list != NULL && strcmp((char*)list->info, "hello") == 0);
+    
+    list = linkedListInsert(list, s2);
+    runTest("linkedListInsert - second string element", strcmp((char*)list->info, "world") == 0);
+    
+    linkedListFree(list, freeString);
+}
+
+void testLinkedListInsertFloat() {
+    LinkedList* list = linkedListInitialize();
+    
+    float *f1 = malloc(sizeof(float)); *f1 = 3.14f;
+    float *f2 = malloc(sizeof(float)); *f2 = 2.71f;
+    
+    list = linkedListInsert(list, f1);
+    list = linkedListInsert(list, f2);
+    
+    runTest("linkedListInsert - float elements", *(float*)list->info == 2.71f);
+    
+    linkedListFree(list, freeFloat);
 }
 
 void testLinkedListInsertVoid() {
     LinkedList* list = linkedListInitialize();
     
-    linkedListInsertVoid(&list, 10);
-    runTest("linkedListInsertVoid - first element", list != NULL && list->info == 10);
+    int *a = malloc(sizeof(int)); *a = 10;
+    int *b = malloc(sizeof(int)); *b = 20;
     
-    linkedListInsertVoid(&list, 20);
-    runTest("linkedListInsertVoid - second element", list->info == 20 && list->next->info == 10);
+    linkedListInsertVoid(&list, a);
+    runTest("linkedListInsertVoid - first element", list != NULL && *(int*)list->info == 10);
     
-    linkedListFree(list);
+    linkedListInsertVoid(&list, b);
+    runTest("linkedListInsertVoid - second element", *(int*)list->info == 20 && *(int*)list->next->info == 10);
+    
+    linkedListFree(list, freeInt);
 }
 
 void testLinkedListSearch() {
     LinkedList* list = linkedListInitialize();
-    list = linkedListInsert(list, 10);
-    list = linkedListInsert(list, 20);
-    list = linkedListInsert(list, 30);
     
-    LinkedList* found = linkedListSearch(list, 20);
-    runTest("linkedListSearch - existing element", found != NULL && found->info == 20);
+    int *a = malloc(sizeof(int)); *a = 10;
+    int *b = malloc(sizeof(int)); *b = 20;
+    int *c = malloc(sizeof(int)); *c = 30;
+    int search20 = 20, search99 = 99;
     
-    found = linkedListSearch(list, 99);
+    list = linkedListInsert(list, a);
+    list = linkedListInsert(list, b);
+    list = linkedListInsert(list, c);
+    
+    LinkedList* found = linkedListSearch(list, &search20, compareInt);
+    runTest("linkedListSearch - existing element", found != NULL && *(int*)found->info == 20);
+    
+    found = linkedListSearch(list, &search99, compareInt);
     runTest("linkedListSearch - non-existing element", found == NULL);
     
-    found = linkedListSearch(NULL, 10);
+    found = linkedListSearch(NULL, &search20, compareInt);
     runTest("linkedListSearch - empty list", found == NULL);
     
-    linkedListFree(list);
+    linkedListFree(list, freeInt);
 }
 
 void testLinkedListSearchRecursive() {
     LinkedList* list = linkedListInitialize();
-    list = linkedListInsert(list, 10);
-    list = linkedListInsert(list, 20);
-    list = linkedListInsert(list, 30);
     
-    LinkedList* found = linkedListSearchRecursive(list, 10);
-    runTest("linkedListSearchRecursive - existing element", found != NULL && found->info == 10);
+    int *a = malloc(sizeof(int)); *a = 10;
+    int *b = malloc(sizeof(int)); *b = 20;
+    int *c = malloc(sizeof(int)); *c = 30;
+    int search10 = 10, search99 = 99;
     
-    found = linkedListSearchRecursive(list, 99);
+    list = linkedListInsert(list, a);
+    list = linkedListInsert(list, b);
+    list = linkedListInsert(list, c);
+    
+    LinkedList* found = linkedListSearchRecursive(list, &search10, compareInt);
+    runTest("linkedListSearchRecursive - existing element", found != NULL && *(int*)found->info == 10);
+    
+    found = linkedListSearchRecursive(list, &search99, compareInt);
     runTest("linkedListSearchRecursive - non-existing element", found == NULL);
     
-    linkedListFree(list);
+    linkedListFree(list, freeInt);
 }
 
 void testLinkedListRemove() {
     LinkedList* list = linkedListInitialize();
-    list = linkedListInsert(list, 10);
-    list = linkedListInsert(list, 20);
-    list = linkedListInsert(list, 30);
     
-    list = linkedListRemove(list, 20);
-    LinkedList* found = linkedListSearch(list, 20);
+    int *a = malloc(sizeof(int)); *a = 10;
+    int *b = malloc(sizeof(int)); *b = 20;
+    int *c = malloc(sizeof(int)); *c = 30;
+    int search20 = 20, search30 = 30, search99 = 99;
+    
+    list = linkedListInsert(list, a);
+    list = linkedListInsert(list, b);
+    list = linkedListInsert(list, c);
+    
+    list = linkedListRemove(list, &search20, compareInt, freeInt);
+    LinkedList* found = linkedListSearch(list, &search20, compareInt);
     runTest("linkedListRemove - middle element", found == NULL);
     
-    list = linkedListRemove(list, 30);
-    runTest("linkedListRemove - first element", list->info == 10);
+    list = linkedListRemove(list, &search30, compareInt, freeInt);
+    runTest("linkedListRemove - first element", *(int*)list->info == 10);
     
-    list = linkedListRemove(list, 99);
+    list = linkedListRemove(list, &search99, compareInt, freeInt);
     runTest("linkedListRemove - non-existing element", list != NULL);
     
-    linkedListFree(list);
+    linkedListFree(list, freeInt);
 }
 
 void testLinkedListRemoveRecursive() {
     LinkedList* list = linkedListInitialize();
-    list = linkedListInsert(list, 10);
-    list = linkedListInsert(list, 20);
-    list = linkedListInsert(list, 30);
     
-    list = linkedListRemoveRecursive(list, 10);
-    LinkedList* found = linkedListSearchRecursive(list, 10);
+    int *a = malloc(sizeof(int)); *a = 10;
+    int *b = malloc(sizeof(int)); *b = 20;
+    int *c = malloc(sizeof(int)); *c = 30;
+    int search10 = 10, search99 = 99;
+    
+    list = linkedListInsert(list, a);
+    list = linkedListInsert(list, b);
+    list = linkedListInsert(list, c);
+    
+    list = linkedListRemoveRecursive(list, &search10, compareInt, freeInt);
+    LinkedList* found = linkedListSearchRecursive(list, &search10, compareInt);
     runTest("linkedListRemoveRecursive - last element", found == NULL);
     
-    list = linkedListRemoveRecursive(list, 99);
+    list = linkedListRemoveRecursive(list, &search99, compareInt, freeInt);
     runTest("linkedListRemoveRecursive - non-existing element", list != NULL);
     
-    linkedListFree(list);
+    linkedListFree(list, freeInt);
 }
 
 void testLinkedListPrint() {
     LinkedList* list = linkedListInitialize();
-    list = linkedListInsert(list, 10);
-    list = linkedListInsert(list, 20);
-    list = linkedListInsert(list, 30);
+    
+    int *a = malloc(sizeof(int)); *a = 10;
+    int *b = malloc(sizeof(int)); *b = 20;
+    int *c = malloc(sizeof(int)); *c = 30;
+    
+    list = linkedListInsert(list, a);
+    list = linkedListInsert(list, b);
+    list = linkedListInsert(list, c);
     
     printf("\nTesting print functions (visual verification required):\n");
     printf("Normal: ");
-    linkedListPrint(list);
+    linkedListPrint(list, printInt);
     printf("\n");
     
     printf("Recursive: ");
-    linkedListPrintRecursive(list);
+    linkedListPrintRecursive(list, printInt);
     printf("\n");
     
     printf("Recursive Reverse: ");
-    linkedListPrintRecursiveReverse(list);
+    linkedListPrintRecursiveReverse(list, printInt);
     printf("\n");
     
     runTest("linkedListPrint functions", 1);
     
-    linkedListFree(list);
+    linkedListFree(list, freeInt);
 }
 
 int main() {
     printf("Running LinkedList Tests...\n");
     printf("=============================\n");
-    
     testLinkedListInitialize();
-    testLinkedListInsert();
+    testLinkedListInsertInt();
+    testLinkedListInsertString();
+    testLinkedListInsertFloat();
     testLinkedListInsertVoid();
     testLinkedListSearch();
     testLinkedListSearchRecursive();
@@ -152,14 +211,8 @@ int main() {
     testLinkedListRemoveRecursive();
     testLinkedListPrint();
     
-    printf("\n=============================\n");
-    printf("Tests Summary: %d/%d PASSED\n", testsPassed, testsTotal);
-    
-    if (testsPassed == testsTotal) {
-        printf("All tests PASSED!\n");
-        return 0;
-    } else {
-        printf("Some tests FAILED!\n");
-        return 1;
-    }
+
+
+    printResults();
+    return (testsPassed == testsTotal) ? 0 : 1;
 }

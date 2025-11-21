@@ -16,7 +16,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-./testBinaryTree
-./testBinarySearchTree  
-./testLinkedList
-./testBPlusTree
+#pega tudo direto em vez de adicionar 1 por 1
+for test_exe in ./test*; do
+    if [ -x "$test_exe" ]; then
+        "$test_exe"
+    fi
+done

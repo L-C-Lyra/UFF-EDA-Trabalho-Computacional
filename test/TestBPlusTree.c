@@ -1,25 +1,14 @@
 #include <stdio.h>
 #include <assert.h>
 #include "../libs/BPlusTree.h"
+#include "Tester.h"
 
-int testsPassed = 0;
-int testsTotal = 0;
-
-void runTest(const char* testName, int condition) {
-    testsTotal++;
-    if (condition) {
-        printf("PASSED: %s\n", testName);
-        testsPassed++;
-    } else {
-        printf("ERROR: %s\n", testName);
-    }
-}
+//AVISO: os testes não foram gerados com IA mas IA foi usado para formatar os textos de uma forma mais coesa!
 
 void testBPlusTreeInitialize() {
     BPlusTree* tree = bPlusTreeInitialize();
     runTest("bPlusTreeInitialize", tree == NULL);
 }
-
 void testBPlusTreeCreate() {
     int t = 3;
     BPlusTree* tree = bPlusTreeCreate(t);
@@ -47,7 +36,6 @@ void testBPlusTreeInsert() {
     tree = bPlusTreeInsert(tree, 25, t);
     
     runTest("bPlusTreeInsert - multiple elements", tree->numKeys > 0);
-    
     tree = bPlusTreeInsert(tree, 10, t);
     runTest("bPlusTreeInsert - duplicate element", tree != NULL);
     
@@ -158,7 +146,6 @@ void testBPlusTreeStress() {
 int main() {
     printf("Running BPlusTree Tests...\n");
     printf("============================\n");
-    
     testBPlusTreeInitialize();
     testBPlusTreeCreate();
     testBPlusTreeInsert();
@@ -167,14 +154,6 @@ int main() {
     testBPlusTreePrint();
     testBPlusTreeStress();
     
-    printf("\n============================\n");
-    printf("Tests Summary: %d/%d PASSED\n", testsPassed, testsTotal);
-    
-    if (testsPassed == testsTotal) {
-        printf("All tests PASSED!\n");
-        return 0;
-    } else {
-        printf("Some tests FAILED!\n");
-        return 1;
-    }
+    printResults();
+    return (testsPassed == testsTotal) ? 0 : 1;
 }
