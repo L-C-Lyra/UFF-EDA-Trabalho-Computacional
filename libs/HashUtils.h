@@ -5,5 +5,5 @@
 
 #define DIVIDER 256
 
-int HashFromString(char *str);
-bool TestStringHashCollision(char *str1, char *str2);
+int hashFromString(char *str);
+bool testStringHashCollision(char *str1, char *str2);

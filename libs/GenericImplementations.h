@@ -1,8 +1,11 @@
+#ifndef GENERIC_IMPLEMENTATIONS_H
+#define GENERIC_IMPLEMENTATIONS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "GenericTypes.h"
 
-//byte
 int compareByte(void *a, void *b) {
 	return *(unsigned char*)a - *(unsigned char*)b;
 }
@@ -13,7 +16,6 @@ void freeByte(void *data) {
 	free((unsigned char*)data);
 }
 
-//short
 int compareShort(void *a, void *b) {
 	return *(short*)a - *(short*)b;
 }
@@ -23,7 +25,7 @@ void printShort(void *data) {
 void freeShort(void *data) {
 	free((short*)data);
 }
-//int
+
 int compareInt(void *a, void *b) {
 	return *(int*)a - *(int*)b;
 }
@@ -34,7 +36,6 @@ void freeInt(void *data) {
 	free((int*)data);
 }
 
-//long
 int compareLong(void *a, void *b) {
 	long diff = *(long*)a - *(long*)b;
 	if (diff < 0) return -1;
@@ -48,8 +49,6 @@ void freeLong(void *data) {
 	free((long*)data);
 }
 
-
-//flt
 int compareFloat(void *a, void *b) {
 	float diff = *(float*)a - *(float*)b;
 	if (diff < 0) return -1;
@@ -63,7 +62,6 @@ void freeFloat(void *data) {
 	free((float*)data);
 }
 
-//double
 int compareDouble(void *a, void *b) {
 	double diff = *(double*)a - *(double*)b;
 	if (diff < 0) return -1;
@@ -77,7 +75,6 @@ void freeDouble(void *data) {
 	free((double*)data);
 }
 
-//chr
 int compareChar(void *a, void *b) {
 	return *(char*)a - *(char*)b;
 }
@@ -87,7 +84,7 @@ void printChar(void *data) {
 void freeChar(void *data) {
 	free((char*)data);
 }
-//str
+
 int compareString(void *a, void *b) {
 	return strcmp((char*)a, (char*)b);
 }
@@ -97,3 +94,5 @@ void printString(void *data) {
 void freeString(void *data) {
 	free((char*)data);
 }
+
+#endif

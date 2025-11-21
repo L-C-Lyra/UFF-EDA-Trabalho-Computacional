@@ -1,17 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "GenericTypes.h"
 
 typedef struct listNode{
   void *info;
   struct listNode *next;
 }LinkedList;
-
-//LEMBRAR!!!! deve criar as funções para o tipo apropriado caso um novo seja adicionado!
-//eu criei uma pequena "biblioteca" para os tipos basicos
-typedef int (*CompareFunc)(void*, void*);
-typedef void (*PrintFunc)(void*);
-typedef void (*FreeFunc)(void*);
 
 LinkedList* linkedListInitialize(void);
 LinkedList* linkedListInsert(LinkedList *l, void *elem);

@@ -8,9 +8,9 @@ void testHashFromString() {
 	char *str1 = "teste"; //to sem criatividade
 	char *str2 = "teste";
 	char *str3 = "outro";
-	int hash1 = HashFromString(str1);
-	int hash2 = HashFromString(str2);
-	int hash3 = HashFromString(str3);
+	int hash1 = hashFromString(str1);
+	int hash2 = hashFromString(str2);
+	int hash3 = hashFromString(str3);
 	
 	runTest("HashFromString - same string same hash", hash1 == hash2);
 	runTest("HashFromString - different strings different hash", hash1 != hash3);
@@ -19,14 +19,14 @@ void testHashFromString() {
 
 void testHashFromStringEmpty() {
 	char *empty = "";
-	int hash = HashFromString(empty);
+	int hash = hashFromString(empty);
 	
 	runTest("HashFromString - empty string", hash == 0);
 }
 
 void testHashFromStringSingleChar() {
 	char *single = "a";
-	int hash = HashFromString(single);
+	int hash = hashFromString(single);
 	
 	runTest("HashFromString - single char", hash == 'a' % 256);
 }
@@ -35,8 +35,8 @@ void testTestStringHashCollision() {
 	char *str1 = "abc";
 	char *str2 = "abc";
 	char *str3 = "def";
-	runTest("TestStringHashCollision - identical strings", TestStringHashCollision(str1, str2) == true);
-	runTest("TestStringHashCollision - different strings", TestStringHashCollision(str1, str3) == false);
+	runTest("TestStringHashCollision - identical strings", testStringHashCollision(str1, str2) == true);
+	runTest("TestStringHashCollision - different strings", testStringHashCollision(str1, str3) == false);
 }
 
 void testHashDistribution() {
@@ -56,7 +56,7 @@ void testHashDistribution() {
 	int allDifferent = 1;
 	
 	for (int i = 0; i < numStrings; i++) {
-		hashes[i] = HashFromString(strings[i]);
+		hashes[i] = hashFromString(strings[i]);
 	}
 	for (int i = 0; i < numStrings; i++) {
 		for (int j = i + 1; j < numStrings; j++) {

@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <string.h>
 #include "../libs/LinkedList.h"
-#include "../libs/LinkedListTypes.h"
+#include "../libs/GenericImplementations.h"
 #include "Tester.h"
 
 //AVISO: os testes não foram gerados com IA mas IA foi usado para formatar os textos de uma forma mais coesa!(sou pessimo escrevendo)
