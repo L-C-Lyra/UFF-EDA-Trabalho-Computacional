@@ -22,3 +22,4 @@ void linkedListPrintRecursiveReverse(LinkedList *l, PrintFunc print);
 void linkedListFreeRecursive(LinkedList *l, FreeFunc freeData);
 LinkedList* linkedListSearchRecursive(LinkedList *l, void *elem, CompareFunc compare);
 LinkedList* linkedListRemoveRecursive(LinkedList *l, void *elem, CompareFunc compare, FreeFunc freeData);
+int linkedListSize(LinkedList *l);

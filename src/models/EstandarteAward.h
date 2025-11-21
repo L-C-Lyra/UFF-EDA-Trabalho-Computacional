@@ -1,17 +1,17 @@
-#ifndef ESTANDARTE_AWARD_H //LEMBRAR DOS INCLUDE GUARDS!!!!
+#ifndef ESTANDARTE_AWARD_H
 #define ESTANDARTE_AWARD_H
-
-#include <stdlib.h>
-#include "../../libs/LinkedList.h"
+#include <stdint.h>
 
 typedef struct {
-	int year;
-	char *category;
-	char *winner;
+    uint16_t year;
+    char category[128];
+    char winner[256];
 } EstandarteAward;
 
-int compareEstandarteAward(void *a, void *b);
-void printEstandarteAward(void *data);
-void freeEstandarteAward(void *data);
+
+EstandarteAward* estandarteAwardCreate(uint16_t year, const char* category, const char* winner);
+void estandarteAwardFree(EstandarteAward* award);
+void estandarteAwardPrint(EstandarteAward* award);
+int estandarteAwardCompare(EstandarteAward* a, EstandarteAward* b);
 
 #endif
