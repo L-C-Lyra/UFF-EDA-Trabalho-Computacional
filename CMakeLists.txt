@@ -34,12 +34,16 @@ set(SRC_SOURCES
         src/models/ChampionshipInfo.c
         src/models/EstandarteAward.c
         src/models/SchoolInfo.c
+        src/models/YearInfo.c
+        src/models/Participation.c
         src/models/IndividualInfo.c
 )
 set(SRC_HEADERS
         src/models/ChampionshipInfo.h
         src/models/EstandarteAward.h
         src/models/SchoolInfo.h
+        src/models/YearInfo.h
+        src/models/Participation.h
         src/models/IndividualInfo.h
 )
 

@@ -1,19 +1,18 @@
-#ifndef CHAMPIONSHIP_INFO_H //LEMBRAR DOS INCLUDE GUARDS!!!!
-#define CHAMPIONSHIP_INFO_H //se nao lembrar voce vai 100% de certeza cair em algum erro de compilação!
-
-#include <stdlib.h>
-#include "../../libs/LinkedList.h"
+#ifndef CHAMPIONSHIP_INFO_H
+#define CHAMPIONSHIP_INFO_H
+#include <stdint.h>
 
 typedef struct {
-	int year;
-	int number;
-	char *theme;
-	char *carnivalDesigner;
-	char *runnerUp;
+    uint16_t year;
+    uint8_t titleNumber;
+    char theme[256];
+    char carnivalDesigner[256];
 } ChampionshipInfo;
 
-int compareChampionshipInfo(void *a, void *b);
-void printChampionshipInfo(void *data);
-void freeChampionshipInfo(void *data);
+ChampionshipInfo* championshipInfoCreate(uint16_t year, uint8_t titleNumber, const char* theme, const char* carnivalDesigner);
+void championshipInfoFree(ChampionshipInfo* info);
+void championshipInfoPrint(ChampionshipInfo* info);
+int championshipInfoCompare(ChampionshipInfo* a, ChampionshipInfo* b);
+
 
 #endif

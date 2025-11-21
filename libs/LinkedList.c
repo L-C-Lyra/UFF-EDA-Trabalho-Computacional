@@ -94,3 +94,13 @@ LinkedList* linkedListSearchRecursive(LinkedList *l, void *elem, CompareFunc com
   if((!l) || (compare(l->info, elem) == 0)) return l;
   return linkedListSearchRecursive(l->next, elem, compare);
 }
+
+int linkedListSize(LinkedList *l){
+  int count = 0;
+  LinkedList *p = l;
+  while(p){
+    count++;
+    p = p->next;
+  }
+  return count;
+}
