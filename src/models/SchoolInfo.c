@@ -40,17 +40,17 @@ void schoolInfoPrint(SchoolInfo* info) {
     int runnerUpCount = linkedListSize(info->runnerUpList);
     int awardCount = linkedListSize(info->awardList);
     
-    printf("titulos: %d\n", titleCount);
+    printf("Titulos: %d\n", titleCount);
     if (titleCount > 0) {
         linkedListPrint(info->titleList, (PrintFunc)championshipInfoPrint);
     }
     
-    printf("\nvices: %d\n", runnerUpCount);
+    printf("\nVices: %d\n", runnerUpCount);
     if (runnerUpCount > 0) {
         linkedListPrint(info->runnerUpList, (PrintFunc)championshipInfoPrint);
     }
     
-    printf("\mestandarte de ouro: %d\n", awardCount);
+    printf("\nEstandarte de ouro: %d\n", awardCount);
     if (awardCount > 0) {
         linkedListPrint(info->awardList, (PrintFunc)estandarteAwardPrint);
     }
@@ -62,14 +62,41 @@ int schoolInfoCompare(SchoolInfo* a, SchoolInfo* b) {
     if (!a || !b) return 0;
     return strcmp(a->schoolName, b->schoolName);
 }
+
 void schoolInfoAddTitle(SchoolInfo* info, void* championshipInfo) {
+    if (!info || !championshipInfo) return;
     
-    if (info && championshipInfo) info->titleList = linkedListInsert(info->titleList, championshipInfo);
+    ChampionshipInfo* newChamp = (ChampionshipInfo*)championshipInfo;
+    
+    LinkedList* current = info->titleList;
+    while(current && current->info) {
+        ChampionshipInfo* existing = (ChampionshipInfo*)current->info;
+        if(existing->year == newChamp->year) {
+            championshipInfoFree(newChamp);
+            return;
+        }
+        current = current->next;
+    }
+    
+    info->titleList = linkedListInsert(info->titleList, championshipInfo);
 }
+
 void schoolInfoAddRunnerUp(SchoolInfo* info, void* championshipInfo) {
+    if (!info || !championshipInfo) return;
     
-    if (info && championshipInfo)
-        info->runnerUpList = linkedListInsert(info->runnerUpList, championshipInfo);
+    ChampionshipInfo* newChamp = (ChampionshipInfo*)championshipInfo;
+    
+    LinkedList* current = info->runnerUpList;
+    while(current && current->info) {
+        ChampionshipInfo* existing = (ChampionshipInfo*)current->info;
+        if(existing->year == newChamp->year) {
+            championshipInfoFree(newChamp); //o arquivo tem duplicatas, ignorar elas e liberar pra tirar o leak
+            return;
+        }
+        current = current->next;
+    }
+    
+    info->runnerUpList = linkedListInsert(info->runnerUpList, championshipInfo);
 }
 void schoolInfoAddAward(SchoolInfo* info, void* estandarteAward) {
    
